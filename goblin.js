@@ -1,6 +1,6 @@
 let goblin_pow=15
 let goblin_e=5
-let goblin_m=25
+let goblin_m=20
 function goblin(){
 	ev["goblin1"]={
 		ev:function(){
@@ -10,13 +10,13 @@ function goblin(){
 			}else{
 				ans=rand(3)
 				if(ans==0){
-					show("你攻击了一个落单的哥布林，但是没造成多少伤害。它在摸了一下你的屁股之后从容地逃跑了。")
+					show("你攻击了一个落单的哥布林，但是没造成多少伤害。他在摸了一下你的屁股之后从容地逃跑了。")
 					gain({a_exp:1})
 				}else if(ans==1){
-					show("你攻击了一个落单的哥布林，但是没造成多少伤害。它在摸了一下你的胸部之后从容地逃跑了。")
+					show("你攻击了一个落单的哥布林，但是没造成多少伤害。他在摸了一下你的胸部之后从容地逃跑了。")
 					gain({b_exp:1})
 				}else if(ans==2){
-					show("你攻击了一个落单的哥布林，但是没造成多少伤害。它在摸了一下你的阴部之后从容地逃跑了。")
+					show("你攻击了一个落单的哥布林，但是没造成多少伤害。他在摸了一下你的阴部之后从容地逃跑了。")
 					gain({v_exp:1})
 				}
 			}
@@ -42,7 +42,6 @@ function goblin(){
 				else{
 					show("幸运的是，哥布林似乎忘了这个陷阱的存在。")
 					show("不久之后，你设法解开了束缚。")
-					gain({p_exp:2})
 				}
 			}
 		},
@@ -53,22 +52,21 @@ function goblin(){
 		end:1
 	}
 	ev["goblin3"]={
-		ev:function(){
+		ev: function () {
 			show("你杀死了一个落单的哥布林。")
-				gain({exp:goblin_e,money:goblin_m})
+			gain({ exp: goblin_e, money: goblin_m })
 			pause()
-			if(check("str", goblin_pow+2)>=0){
-				show("在你搜刮战利品时，藏在一旁的哥布林从背后抓住了你。")
-				show("你在被它揉弄了几下胸部之后才摆脱了哥布林的压制，随后你又多了一份战利品。")
-				gain({exp:goblin_e,money:goblin_m,b_exp:1})
-			}else{
-				show("在你搜刮战利品时，藏在一旁的哥布林从背后抓住了你。")
-				show("它抓住你的胸部使劲揉弄。你一时之间浑身酸软，无法反抗。")
-				gain({b_exp:3})
-				if(rand(4)==0){
-					show("更多哥布林冒了出来。你被它们捆得严严实实。")
-					gainbuff("监禁：哥布林",1)
-				}else{
+			show("在你搜刮战利品时，藏在一旁的哥布林从背后抓住了你。")
+			if (check("str", goblin_pow + status.b_lv * 2) >= 0) {
+				show("你被揉了几下胸部之后摆脱了压制，随后你又多了一份战利品。")
+				gain({ exp: goblin_e, money: goblin_m, b_exp: 1 })
+			} else {
+				show("他抓住你的胸部使劲揉弄。你一时之间浑身酸软，无法反抗。")
+				gain({ b_exp: 3 })
+				if (rand(4) == 0) {
+					show("更多哥布林冒了出来。你被他们捆得严严实实。")
+					gainbuff("监禁：哥布林", 1)
+				} else {
 					show("你赶在更多哥布林出现前逃跑了。")
 				}
 			}
@@ -83,22 +81,24 @@ function goblin(){
 	ev["goblin4"]={
 		ev:function(){
 			show("你遭遇了一支哥布林小队。",true)
-			ans=check("dex",goblin_pow+2)
-			if(ans>=7){
+			ans=check("max",goblin_pow + 10)
+			if(ans>=0){
 				show("你巧妙地将哥布林小队各个击破。")
 				gain({exp:goblin_e*3,money:goblin_m*3})
-			}else if(ans>=0){
-				show("在击倒其中一个哥布林后，你突破了他们的包围。")
-				gain({exp:goblin_e,money:goblin_m})
 			}else{
-				show("它们轮流袭击你身上的敏感部位，令你手忙脚乱。")
-				gain({"v_exp":1,"b_exp":1,"a_exp":1})
-				show("你很快就招架不住了。",true)
-				if(rand(2)==0){
-					show("它们分别占据了你身上的一个洞，各自动起了腰。")
-					gain({"v_exp":3,"a_exp":3,"o_exp":3,"s_exp":3},"哥布林")
-				}else{
-					show("他们为谁先侵犯你发生了争执，你乘机逃跑了。")
+				show("他们轮流袭击你身上的敏感部位，令你手忙脚乱。")
+				var tmp = gain({ "v_exp": 1, "b_exp": 1, "a_exp": 1 })
+				if (tmp == 0||check("dex", goblin_pow + tmp*4)>=0) {
+					show("在击倒其中一个哥布林后，你突破了他们的包围。")
+					gain({ exp: goblin_e, money: goblin_m })
+				} else {
+					show("你无法在这样的刺激下保持平衡。", true)
+					if (rand(2) == 0) {
+						show("他们分别占据了你身上的一个洞，各自动起了腰。")
+						gain({ "v_exp": 3, "a_exp": 3, "o_exp": 3, "s_exp": 3 }, "哥布林")
+					} else {
+						show("他们为谁先侵犯你发生了争执，你乘机逃跑了。")
+					}
 				}
 			}
 		},
@@ -111,40 +111,36 @@ function goblin(){
 	}
 	ev["goblin5"]={
 		ev:function(){
-			var ans=check("wis",goblin_pow+2)
-			if(ans<0){
-				var ans2=rand(10)
+			var pp = goblin_pow + 4
+			if ("兽化魔法" in buff) pp += buff["兽化魔法"]
+			var ans=check("wis",pp)
+			if (ans < 0) {
 				show("哥布林法师对你释放了一个法术。")
-				show("好像什么都没有发生。",true)
-				if(ans2<=3){
-					show("你正要做出反击时，哥布林法师示意你用狗爬的姿势靠近它。")
-					show("你的身体不受控制地遵循了它的指示。")
-					gain({p_exp:2})
+				show("好像什么都没有发生。", true)
+				var ans2 = rand(10)
+				if (ans2 <= 4) {
+					show("他示意你靠近。你走上前结果了他。")
+					gain({ exp: goblin_e, money: goblin_m * 2 })
+				} else if (ans2 <= 7) {
+					show("他示意你靠近。你的身体不受控制地遵循了他的指示。")
+					show("你趴下身子，朝着哥布林法师爬了过去，随后伸出舌头舔舐他的肉棒。")
+					gainbuff("兽化魔法", 1)
+					gain({ o_exp: 3, b_exp: 3, s_exp: 1 }, "哥布林法师")
 					pause()
-					if(ans2<=2){
-						show("你被操控着伸出舌头，舔舐它的肉棒。")
-						gain({o_exp:3,b_exp:3,s_exp:1},"哥布林法师")
-						pause()
-						if(ans2<=1){
-							show("在它满足了后，他又命令你脱光衣服，以四肢着地的姿势跟在他身后。")
-							gain({e_exp:2})
-							pause()
-							if(ans2<=0){
-								show("你随着它一路爬进了哥布林村。")
-								gain({e_exp:5})
-								gainbuff("监禁：哥布林",1)
-								show("你取回了对身体的控制权，但是为时已晚。")
-								return
-							}
-						}
-					}
-					show("你取回了对身体的控制权，趁它不备逃走了。")
-					return
+					show("在哥布林法师满足之后，他掏出一条链子试图拴在你的脖子上。")
+					show("你及时地夺回了身体的操控权。")
+				} else {
+					show("他示意你靠近。你的身体不受控制地遵循了他的指示。")
+					show("你趴下身子，朝着哥布林法师爬了过去，随后伸出舌头舔舐他的肉棒。")
+					gainbuff("兽化魔法", 1)
+					gain({ o_exp: 3, b_exp: 3, s_exp: 1 }, "哥布林法师")
+					pause()
+					show("在哥布林法师满足之后，他掏出一条链子试图拴在你的脖子上。")
+					show("你顺从地被他牵着，一路爬进了哥布林村。")
+					gainbuff("监禁：哥布林", 1)
 				}
-				show("它示意你靠近。你走上前结果了它。")
-				gain({exp:goblin_e,money:goblin_m*2})
 			}else{
-				show("哥布林法师打算对你释放了一个法术，你赶在吟唱完成前结果了它。")
+				show("哥布林法师打算对你释放了一个法术，你赶在吟唱完成前结果了他。")
 				gain({exp:goblin_e,money:goblin_m*2})
 			}
 		},
@@ -155,155 +151,92 @@ function goblin(){
 		},
 		end:1
 	}
-	ev["goblin_village2"]={
-		ev:function(){
-			show("你制定了一个大胆的哥布林村讨伐计划。",true)
-			show("你脱光衣服，在哥布林村的附近到处爬行，在树干上留下你的标记。")
-			gain({e_exp:3,u_exp:3},true)
-			show("哥布林注意到了你。你翻过身子向对方露出肚皮和小穴，像狗一样吐着舌头。")
-			if(rand(3)==0){
-				show("哥布林认为你是一条逃跑的母狗，决定将你就地正法。")
-				gain({v_exp:3,s_exp:1,p_exp:1},true)
-				show("你在和哥布林交配的过程中渐渐地忘记了自己原本的目的，顺从地跟着它返回了村子。",true)
-				show("或许这正是你本来的目的？")
-				gainbuff("监禁：哥布林",1)
-			}else{
-				show("哥布林认为你是一条走失的母狗，将你牵回了村子。")
-				gain({e_exp:3},true)
-				show("你乘着哥布林没有防备，用脖子上的狗链作为武器攻击了它。",true)
-				show("你重复着这样的操作，将哥布林的战力逐渐消灭。")
-				gain({exp:goblin_e*2,money:goblin_m*2})
-				show("",true)
-				if(getop("武道家")<-100){
-					show("你救出了被折磨得不成人形的武道家。")
-					if(week<=op["武道家"].prison){
-						show("武道家拒绝了你的搀扶，挣扎着站了起来。")
-						op["武道家"].val+=10000
-						gainop("武道家")
-						gainbuff("武道家的战友")
-					}else{
-						show("武道家似乎已经忘了如何直立行走，跟在你后面爬行着。")
-						show("",true)
-						show("武道家退出了冒险者公会。")
-						if("武道家的战友" in buff)
-						gainbuff("武道家的战友",-10000)
-					}
-					pause()
-				}		
-				gain({"money":100})
-				chapter=2
-				chapter_startweek=week
-				pause()
-				show("你的冒险者等级提升了。")
-			}
-		},
-		town:false,
-		chance:function(){
-			if("goblin_aftermath" in past_event)return 1
-		},
-		end:1
-	}
 	ev["goblin_village"]={
 		ev:function(){
 			show("你闯进了哥布林村。",true)
-			for(i=1;i<=3;i++){
+			for(i=1;i<=4;i++){
 				var r=rand(4)
-				if(r==1){
-					if (check("dex",goblin_pow)>=0) {
+				if (r == 1) {
+					if (check("dex", goblin_pow) >= 0) {
 						show("你发现了哥布林设下的陷阱。")
 						show("你不动声色地绕开了，随后揪出埋伏在一旁的哥布林。")
-						gain({exp:goblin_e,money:goblin_m})
-					}else{
+						gain({ exp: goblin_e, money: goblin_m })
+					} else {
 						show("你踩中了哥布林设下的陷阱。")
 						show("埋伏在一旁的哥布林侵犯了你。")
-						gain({v_exp:3,p_exp:2,s_exp:1},"哥布林")
+						gain({ v_exp: 3, p_exp: 2, s_exp: 1 }, "哥布林")
 						pause()
 						show("然后，更多哥布林围了上来。")
-						gainbuff("监禁：哥布林",1)
+						gainbuff("监禁：哥布林", 1)
 						return
 					}
-				}else if(r==2){
+				} else if (r == 2) {
 					show("你杀死了一个落单的哥布林。")
-					gain({exp:goblin_e,money:goblin_m})
+					gain({ exp: goblin_e, money: goblin_m })
 					pause()
-					if(check("str",goblin_pow+2)>=0){
-						show("在你搜刮战利品时，藏在一旁的哥布林从背后抓住了你。")
-						show("你在被它揉弄了几下胸部之后才摆脱了哥布林的压制，随后你又多了一份战利品。")
-						gain({exp:goblin_e,money:goblin_m,b_exp:1})
-					}else{
-						show("在你搜刮战利品时，藏在一旁的哥布林从背后抓住了你。")
-						show("它抓住你的胸部使劲揉弄。你一时之间浑身酸软，无法反抗。")
-						gain({b_exp:3})
-						show("更多哥布林冒了出来。你被它们捆得严严实实。")
-						gainbuff("监禁：哥布林",1)
+					show("在你搜刮战利品时，藏在一旁的哥布林从背后抓住了你。")
+					if (check("str", goblin_pow + status.b_lv * 2) >= 0) {
+						show("你被揉了几下胸部之后摆脱了压制，随后你又多了一份战利品。")
+						gain({ exp: goblin_e, money: goblin_m, b_exp: 1 })
+					} else {
+						show("他抓住你的胸部使劲揉弄。你一时之间浑身酸软，无法反抗。")
+						gain({ b_exp: 3 })
+						show("更多哥布林冒了出来。你被他们捆得严严实实。")
+						gainbuff("监禁：哥布林", 1)
 						return
 					}
-				}else if(r==3){
-					show("你遭遇了一支哥布林小队。",true)
-					ans=check("dex",goblin_pow+2)
-					if(ans>=7){
+				} else if (r == 3) {
+					show("你遭遇了一支哥布林小队。", true)
+					ans = check("max", goblin_pow + 10)
+					if (ans >= 0) {
 						show("你巧妙地将哥布林小队各个击破。")
-						gain({exp:goblin_e*3,money:goblin_m*2*3})
-					}else if(ans>=0){
-						show("在击倒其中一个哥布林后，你突破了他们的包围。")
-						gain({exp:goblin_e,money:goblin_m})
-					}else{
-						show("它们轮流袭击你身上的敏感部位，令你手忙脚乱。")
-						gain({"v_exp":1,"b_exp":1,"a_exp":1})
-						show("你很快就招架不住了。",true)
-						if(rand(2)==0){
-							show("它们分别占据了你身上的一个洞，各自动起了腰。")
-							gain({"v_exp":3,"a_exp":3,"o_exp":3,"s_exp":3},"哥布林")
-							show("更多哥布林冒了出来。你被它们捆得严严实实。")
-							gainbuff("监禁：哥布林",1)
-							return
-						}else{
-							show("它们为谁先侵犯你发生了争执。别的哥布林反而抢先享用起你的身体。")
-							show("等到新来的哥布林在你的体内射了一发之后，它们的争论还没有结束。")
-							gain({"v_exp":3,"s_exp":1},"哥布林")
-							gainbuff("监禁：哥布林",1)
-							return
+						gain({ exp: goblin_e * 3, money: goblin_m * 3 })
+					} else {
+						show("他们轮流袭击你身上的敏感部位，令你手忙脚乱。")
+						var tmp = gain({ "v_exp": 1, "b_exp": 1, "a_exp": 1 })
+						if (tmp == 0 || check("dex", goblin_pow + tmp * 4) >= 0) {
+							show("在击倒其中一个哥布林后，你突破了他们的包围。")
+							gain({ exp: goblin_e, money: goblin_m })
+						} else {
+							show("你无法在这样的刺激下保持平衡。", true)
+							if (rand(2) == 0) {
+								show("他们分别占据了你身上的一个洞，各自动起了腰。")
+								gain({ "v_exp": 3, "a_exp": 3, "o_exp": 3, "s_exp": 3 }, "哥布林")
+								gainbuff("监禁：哥布林", 1)
+								return
+							} else {
+								show("他们为谁先侵犯你发生了争执。")
+								show("别的哥布林反而抢先使用了你的身体。")
+								gain({ "v_exp": 3, "s_exp": 1 }, "哥布林")
+								gainbuff("监禁：哥布林", 1)
+								return
+							}
 						}
 					}
-				}else{
-					var ans=check("wis",goblin_pow+2)
-					if(ans<0){
-						var ans2=rand(10)
+				} else {
+					var pp = goblin_pow + 4
+					if ("兽化魔法" in buff) pp += buff["兽化魔法"]
+					var ans = check("wis", pp)
+					if (ans < 0) {
 						show("哥布林法师对你释放了一个法术。")
-						show("好像什么都没有发生。",true)
-						if(ans2<=3){
-							show("你正要做出反击时，哥布林法师示意你用狗爬的姿势靠近它。")
-							show("你的身体不受控制地遵循了它的指示。")
-							gain({p_exp:2})
+						show("好像什么都没有发生。", true)
+						var ans2 = rand(10)
+						if (ans2 <= 4) {
+							show("他示意你靠近。你走上前结果了他。")
+							gain({ exp: goblin_e, money: goblin_m * 2 })
+						} else {
+							show("他示意你靠近。你的身体不受控制地遵循了他的指示。")
+							show("你趴下身子，朝着哥布林法师爬了过去，随后伸出舌头舔舐他的肉棒。")
+							gainbuff("兽化魔法", 1)
+							gain({ o_exp: 3, b_exp: 3, s_exp: 1 }, "哥布林法师")
 							pause()
-							if(ans2<=2){
-								show("你被操控着伸出舌头，舔舐着它的肉棒。")
-								gain({o_exp:3,s_exp:1},"哥布林法师")
-								pause()
-								if(ans2<=1){
-									show("在它满足了后，他又命令你脱光衣服，以四肢着地的姿势跟在他身后。")
-									gain({e_exp:2})
-									pause()
-									if(ans2<=0){
-										show("你随着它绕着村子爬了一圈。")
-										gain({e_exp:5})
-										gainbuff("监禁：哥布林",1)
-										show("你取回了对身体的控制权，但是为时已晚。")
-										return
-									}
-								}
-							}
-							show("你取回了对身体的控制权，试图从这里脱身。")
-							show("围观的哥布林大失所望。")
-							show("法师恼怒地指挥它们包围了你。")
-							gainbuff("监禁：哥布林",1)
+							show("在哥布林法师满足之后，更多在一旁围观的哥布林包围了你。")
+							gainbuff("监禁：哥布林", 1)
 							return
 						}
-						show("它示意你靠近。你走上前结果了它。")
-						gain({exp:goblin_e,money:goblin_m*2})
-					}else{
-						show("哥布林法师打算对你释放了一个法术，你赶在吟唱完成前结果了它。")
-						gain({exp:goblin_e,money:goblin_m*2})
+					} else {
+						show("哥布林法师打算对你释放了一个法术，你赶在吟唱完成前结果了他。")
+						gain({ exp: goblin_e, money: goblin_m * 2 })
 					}
 				}
 				pause()
@@ -326,11 +259,15 @@ function goblin(){
 			}
 			show("你在哥布林村里大杀特杀，然后放火烧毁了这个地方。",true)
 			gain({"money":100})
+			nextchapter()
+			if(getbuff("兽化魔法")>=4)setachievement("平常心")
 			//gainbuff("讨伐证明：哥布林村")
-			chapter=2
-			chapter_startweek=week
-			pause()
-			show("你的冒险者等级提升了。")
+			if (past_event.includes("avenger_goblin")) {
+				pause()
+				show("完成复仇后，你感到有些空虚。")
+				gain({str:-2,dex:-2,wis:-2})
+			}
+
 		},
 		town:false,
 		chance:function(){
@@ -346,22 +283,22 @@ function goblin(){
 	ev["goblin_aftermath"]={
 		ev:function(){
 			show("你遇到了一个眼熟的哥布林。")
-			show("你看着它朝你勃起的阴茎，想起了在哥布林村的日子。")
-			ans=rand(8)
-			if(ans==0){
-				show("你下意识地舔了几下它的阴茎，才想起了哥布林是你必须打倒的敌人。",true)
-				show("但你有些怀念哥布林精液的味道，一直舔到它射出来为止。")
-				gain({o_exp:3,s_exp:1})
+			show("你看着他朝你勃起的肉棒，想起了在哥布林村的日子。")
+			ans = rand(8 + getbuff("兽化魔法"))
+			if(ans>=7){
+				show("你下意识地舔了几下他的肉棒，才想起了哥布林是你必须打倒的敌人。",true)
+				show("但你有些怀念哥布林精液的味道，一直舔到他射出来为止。")
+				gain({o_exp:3,s_exp:1},"哥布林")
 				show("",true)
-				show("你以狗爬的姿势随着它返回了哥布林村。")
+				show("你以狗爬的姿势随着他返回了哥布林村。")
 				show("当冰冷的链条再一次栓到你的脖子上时，你才意识到这并不是一场春梦。")
 				gainbuff("监禁：哥布林",1)
-			}else if(ans<=4){
-				show("你下意识地舔了几下它的阴茎，才想起了哥布林是你必须打倒的敌人。",true)
-				show("但你有些怀念哥布林精液的味道，一直舔到它射出来为止。")
-				gain({o_exp:3,s_exp:1})
+			}else if(ans>=4){
+				show("你下意识地舔了几下他的肉棒，才想起了哥布林是你必须打倒的敌人。",true)
+				show("但你有些怀念哥布林精液的味道，一直舔到他射出来为止。")
+				gain({ o_exp: 3, s_exp: 1 }, "哥布林")
 			}else{
-				show("你下意识地舔了几下它的阴茎，才想起了哥布林是你必须打倒的敌人。")
+				show("你下意识地舔了几下他的肉棒，才想起了哥布林是你必须打倒的敌人。")
 				gain({exp:goblin_e,money:goblin_m,o_exp:1})
 			}
 		},
@@ -373,6 +310,75 @@ function goblin(){
 		},
 		end:1
 	}
+	ev["goblin_aftermath2"] = {
+		ev: function () {
+			show("会长公布了一个坏消息：")
+			show("一些哥布林正在形成新的聚落。")
+			show("虽然说少量的哥布林构不成威胁，但如果他们重新繁衍起来的话，又会成为一个大麻烦。")
+		},
+		town: true,
+		once: true,
+		chance: function () {
+			return 0.5
+		},
+		start: 4,
+		end: 4
+	}
+	ev["goblin_aftermath3"] = {
+		ev: function () {
+			if ("月夜雌兽" in buff) {
+				show("你遇到了一个哥布林。")
+				show("你在战斗中假装失误，给了他抓住你的机会。")
+				show("你爬行在哥布林身后，找到了新哥布林村。")
+				show("急需繁殖工具的哥布林对你进行了热烈的欢迎。")
+				randomattack(20, 1, "哥布林", false, 5)
+				if ("暗精灵" in flag) {
+					show("尽兴之后，你轻易地挣脱了束缚。")
+					show("当你正要痛下杀手时，一双手悄无声息地从后面伸出，精准地刺激着你的弱点部位。")
+					gain({b_exp:2,v_exp:2, les_exp:3},"暗精灵",true)
+					show("你发现袭击你的竟是一位熟人。")
+					show("“我不会再次让你毁掉我中意的肉棒。”说着，暗精灵用精灵语念起了一段咒语。")
+					show("一轮圆月凭空出现在空中，在月光的治愈力量下，一切都显得祥和安宁。")
+					show("而你的雌兽本能被空前地强化。")
+					if (status.les_lv >= rand(4)) {
+						show("你手足并用地扑向暗精灵，舔起她丰满的胸部，随后又将她压在身下，让哥布林同时侵犯你们两人。")
+						show("月光的效果被打断了。")
+						randomattack(20, 1, "哥布林", false, 5)
+						show("")
+						show("当你的意识恢复正常时，暗精灵表示她认可了你的实力。")
+						show("另外，为了避免你和她争抢哥布林肉棒，她希望你尽快离开。")
+						gainbuff("月之祝福")
+						setachievement("月之祝福")
+						show("沐浴在月光下会强化你的能力")
+						return
+					} else {
+						show("你手足并用地扑向一个哥布林，舔起他的肉棒，随后又抬起屁股迎接另一个哥布林的到来。")
+						show("在入侵者彻底化为雌兽，被哥布林用肉棒惩罚的同时，暗精灵也迎来了她的奖励——哥布林的肉棒。")
+						show("至于奖励和惩罚为什么都是哥布林的肉棒，沉迷于交合的雌兽们不会在意这种细节。")
+						show("结局：暗精灵的复仇")
+						endofgame("暗精灵的复仇")
+						return
+					}
+				} else {
+					show("尽兴之后，你轻易地挣脱了束缚。")
+					show("你在新哥布林村里大杀特杀，然后放火烧毁了这个地方。")
+					gain({ money: 100, exp: 25 })
+				}
+			} else {
+				show("你遇到了一个哥布林。")
+				show("你在战斗中假装失误，给了他逃跑的机会。")
+				show("你潜行在哥布林身后，找到了新哥布林村。")
+				show("你在新哥布林村里大杀特杀，然后放火烧毁了这个地方。")
+				gain({ money: 100, exp: 25 })
+			}
+		},
+		town: false,
+		once: true,
+		chance: function () {
+			if (past_event.includes("goblin_aftermath2")) return 0.5
+		},
+		start: 4,
+	}
 	ev["goblin_prison1"]={
 		ev:function(){
 			show("你被哥布林扒光衣服，拴在村里的广场上。")
@@ -382,12 +388,7 @@ function goblin(){
 				show("连在项圈上的锁链很短，但你渐渐地习惯了。")
 				show("当哥布林侵犯你时，你会自觉地将屁股抬起到合适的高度。")
 			}
-			gain({v_exp:5,a_exp:5,o_exp:5,b_exp:5,e_exp:5,s_exp:5,p_exp:5},"哥布林")
-			if(buff["监禁：哥布林"]==1 && past_event.includes("goblin_prison1")){
-				pause()
-				show("由于这不是你第一次被哥布林监禁，你适应得很快。")
-				gainbuff("监禁：哥布林",1)
-			}
+			randomattack(15, 1, "哥布林", false, 5)
 			if(op["武道家"]!=null&&op["武道家"].val<0){
 				show("",true)
 				if(week<=op["武道家"].prison){
@@ -395,7 +396,7 @@ function goblin(){
 					show("你时不时能听到她高亢的骂声。")
 				}else{
 					show("武道家被拴在你的旁边。")
-					show("你时不时能听到她高亢的叫床声。")
+					show("你时不时能听到她不成言语的淫声。")
 				}
 			}
 		},
@@ -406,34 +407,85 @@ function goblin(){
 			}
 		}
 	}
+
 	ev["goblin_prison2"]={
 		ev:function(){
-			ans=rand(4)
-			if((ans==0)&&op["武道家"]==null)ans=2
-			if(buff["监禁：哥布林"]>=4 && rand(5)<buff["监禁：哥布林"]-3)ans=2
+			var ans = rand(4)
+			if (ans == 0 && op["武道家"] == null) ans = 2
+			if (ans == 2 && getbuff("兽化魔法") <= 0 && getbuff("监禁：哥布林") >= 3) ans=1
+			if (week % 4 == 2) {
+				if ("兽化魔法" in buff) {
+					show("满月之夜。")
+					show("你感到自己的身体在月光下无比躁动。")
+					gainbuff("兽化魔法", 1)
+					gain({ lust: 5 })
+					show("")
+					var rr = rand(4)
+					if (rr >= 2 && getbuff("监禁：哥布林") >= 3) rr = 0
+					if (rr == 1 && getbuff("兽化魔法") >= 4) rr = 0
+					if (rr == 0) {
+						pause()
+						show("你挣脱了锁链。")
+						show("你惊讶于自己的力量，但残存的理智不足以让你进行复杂的思考。", true)
+						show("你手足并用地扑向一个哥布林，舔起他的肉棒，随后又抬起屁股迎接另一个哥布林的到来。")
+						show("更多哥布林聚集过来，用交尾庆祝雌兽的诞生。")
+						pause()
+						show("结局：哥布林村的雌兽")
+						endofgame("哥布林村的雌兽")
+						return
+					} else if (rr == 1) {
+						pause()
+						show("你挣脱了锁链。")
+						show("你惊讶于自己的力量，但残存的理智不足以让你进行复杂的思考。", true)
+						show("你手足并用地逃出了哥布林村。")
+						gainbuff("监禁：哥布林", -10000)
+					} else {
+						pause()
+						show("你度过了难眠的一夜。")
+						gainbuff("监禁：哥布林", 1)
+					}
+					return
+				} else {
+					show("满月之夜。")
+					if (op["武道家"] != null && op["武道家"].val < 0) 
+						show("你看到武道家在月光下如同野兽一般躁动不安。")
+					else show("你看到旁边的女人在月光下如同野兽一般躁动不安。")
+					show("你也会变得和她一样吗？")
+					gainbuff("监禁：哥布林", 1)
+					return
+				}
+			}
+
 			if(ans==0){
 				if(op["武道家"]!=null){
 					if(op["武道家"].val<0){
-						show("哥布林村的村长想要试一试双人侍奉的滋味，命令武道家和你一起为它服务。")
-						show("你们的舌头在舔舐时不时会触碰到对方。")
-						show("与其说你们在双人口交，不如说你们在隔着一根哥布林肉棒接吻。")
-						gain({"o_exp":3,"s_exp":1,"les_exp":1})
-						gainbuff("监禁：哥布林",1)
+						show("哥布林村的村长想要试一试双人侍奉的滋味，命令武道家和你一起为他服务。",true)
+						if (buff["监禁：哥布林"] < 3) {
+							show("武道家主动抢下了口交的活。")
+							show("但这并不意味着留给你的部分就更加轻松——直到村长满足为止，你被迫舔舐着哥布林的蛋蛋。")
+							gain({ "o_exp": 2, "les_exp": 1 })
+							gainbuff("监禁：哥布林", 1)
+						} else {
+							show("武道家主动抢下了口交的活。")
+							show("你不甘落后地舔起了哥布林的菊花。")
+							gain({ "o_exp": 4, "les_exp": 1 })
+							gainbuff("监禁：哥布林", 1)
+						}
 					}else{
 						show("武道家闯入了哥布林村。",true)
-						if(rand(2)==1){
-							show("她被哥布林法师的催眠魔法命中，脱光衣服摆出四肢着地的姿势，然后被哥布林干得高潮连连。")
+						if (rand(2) == 1) {
+							show("她被哥布林法师的兽化魔法命中，脱光衣服摆出四肢着地的姿势，然后被哥布林干得高潮连连。")
 							show("等到她被锁链拴住后，她才恢复意识，还困惑地问你刚才发生了什么。")
 							show("你无言以对。")
-							op["武道家"].val-=10000
-							op["武道家"].prison=week+5
-							gainbuff("监禁：哥布林",1)
-						}else{
+							op["武道家"].val -= 10000
+							op["武道家"].prison = week + 6
+							gainbuff("监禁：哥布林", 1)
+						} else {
 							show("她掏出一把匕首斩断了锁链，带着你逃了出去。")
-							gainbuff("监禁：哥布林",-10000)
-							show("",true)
+							gainbuff("监禁：哥布林", -10000)
+							show("", true)
 							show("事后你请她到城里最好的餐馆大吃了一顿。")
-							gain({money:-60})
+							gain({ money: -60 })
 						}
 					}
 				}else{
@@ -441,54 +493,44 @@ function goblin(){
 				}
 			}else if(ans==1){
 				show("哥布林法师以你为教具，向学徒传授魔法。",true)
-				if(rand(4)==0){
+				if (status.name == "术士") {
+					show("你发现这是一个难得的学习施法技巧的机会，听得比法师学徒还认真。")
+					gain({ exp: 20 })
+				}
+				if (rand(2) == 0) {
+					gainbuff("兽化魔法", 1)
 					show("魔法生效了。")
 					show("你像狗一样爬行，打滚，抬起腿在树底撒尿。")
-					gain({e_exp:2,u_exp:4})
-				}else if(buff["监禁：哥布林"]>2){
-					show("魔法失效了。")
-					show("你见到法师有些生气，连忙假装魔法生效了。")
-					show("你像狗一样爬行，打滚，抬起腿在树底撒尿。")
-					gain({e_exp:2,u_exp:4})
-				}else{
-					show("魔法失效了。")
-					show("哥布林法师见你没有反应，生气地用它的法杖击打你的屁股。")
-					gain({a_exp:1,p_exp:3})
+					gain({ e_exp: 2, u_exp: 2 })
+				} else {
+					show("直到成功为止，他反复地尝试，并声称前面的都是错误示范。")
+					gainbuff("兽化魔法", 1)
+					gain({ e_exp: 2})
+					pause()
 				}
 				gainbuff("监禁：哥布林",1)
 			}else if(ans==2){
-				if(buff["监禁：哥布林"]<=2){
-					if(op["武道家"]!=null&&op["武道家"].val<0){
-						if(week<=op["武道家"].prison)
-							show("你和武道家低声商量着逃跑计划，直到被哥布林的肉棒打断。")
-						else
-							show("你试图和武道家交谈，但她沉迷于哥布林的肉棒，没有理你。")
-					}
+				if (op["武道家"] != null && op["武道家"].val < 0) {
+					if (week <= op["武道家"].prison)
+						show("你和武道家低声商量着逃跑计划，直到被哥布林的肉棒打断。")
 					else
-						show("你默默地忍受着哥布林的侵犯，等待着逃跑的时机。")
-					gain({v_exp:3,s_exp:1},"哥布林")
-					gainbuff("监禁：哥布林",1)
-
-				}else{
-					show("你放弃了抵抗。")
-					show("每当哥布林经过时，你就会主动摇晃屁股，乞求它们的插入。",true)
-					show("一段时间后，你得到了哥布林的信任。它们解开了你的锁链，允许你自由活动。")
-					show("你在村子里四处爬行，主动侍奉每一根肉棒，以母狗的身份成为了村子的成员。",true)
-					show("")
-					show("结局：哥布林的母狗")
-					gameover=true
+						show("你试图和武道家交谈，但她沉迷于哥布林的肉棒，没有理你。")
 				}
+				else
+					show("你默默地忍受着哥布林的侵犯，等待着逃跑的时机。")
+				gain({ v_exp: 3, s_exp: 1 }, "哥布林")
+				gainbuff("监禁：哥布林", 1)
 			}else{
-				show("负责看守的哥布林在操了你一顿之后睡着了，你注意到钥匙从它的怀中掉了出来。",true)
+				gain({ v_exp: 3, s_exp: 1 }, "哥布林")
+				show("负责看守的哥布林在操了你一顿之后睡着了，你注意到钥匙从他的怀中掉了出来。",true)
 				show("你设法用足尖勾到了钥匙，然后解开了锁链。")
-				gain({v_exp:3,s_exp:1},"哥布林")
 				if(op["武道家"]!=null&&op["武道家"].val<0){
 					show("你为武道家打开了锁。")
 					if(week>op["武道家"].prison){
 						show("武道家似乎已经忘了如何直立行走，你只能独自逃出去。")
 					}
 				}
-				if(check("dex",goblin_pow-buff["监禁：哥布林"])>=0){
+				if(check("dex",goblin_pow+getbuff("兽化魔法"))>=0){
 					if(op["武道家"]!=null&&op["武道家"].val<0&&week<=op["武道家"].prison){
 						show("你和武道家相互支持着逃了出去。")
 						op["武道家"].val+=10000
@@ -500,20 +542,20 @@ function goblin(){
 						gainbuff("监禁：哥布林",-10000)
 					}
 				}else{
-					if(op["武道家"]!=null&&op["武道家"].val<0&&week<=op["武道家"].prison){
+					if (op["武道家"] != null && op["武道家"].val < 0 && week <= op["武道家"].prison) {
 						show("在逃跑途中你们被哥布林发现了。")
 						show("武道家当机立断地迎上去舔舐哥布林的肉棒。哥布林以为只是一条母狗没拴好，没有意识到逃跑的母狗不止一条。")
 						show("你乘机逃了出来。")
-						gainbuff("监禁：哥布林",-10000)
-					}else{
+						gainbuff("监禁：哥布林", -10000)
+					} else{
 				
 						show("在逃跑途中你被哥布林发现了。")
-						if(buff["监禁：哥布林"]<=2){
+						if(getbuff("兽化魔法")<=2){
 							show("作为惩罚，你接受了大量的凌辱。")
-							gain({v_exp:10,a_exp:10,o_exp:5,b_exp:5,e_exp:5,s_exp:10,p_exp:20},"哥布林")
+							randomattack(25, 1, "哥布林", false, 5)
 						}else{
 							show("你当机立断地迎上去舔舐哥布林的肉棒。哥布林以为只是一条母狗没拴好，没有意识到你试图逃跑。")
-							gain({b_exp:3,o_exp:5,s_exp:2},"哥布林")
+							gain({o_exp:5,s_exp:2},"哥布林")
 						}
 						gainbuff("监禁：哥布林",1)
 					}

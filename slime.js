@@ -1,10 +1,10 @@
 let slime_pow=20
 let slime_e=10
-let slime_m=30
+let slime_m=25
 function slime(){
 	ev["slime"]={
 		ev:function(){
-			ans=check("dex",slime_pow-3)
+			ans=check("max",slime_pow)
 			if(ans>=8){
 				show("你击穿了蓝色史莱姆的核心。")
 				show("史莱姆炸裂开来，你避开了它的腐蚀体液。")
@@ -18,7 +18,7 @@ function slime(){
 				show("你被它的腐蚀体液喷了一身，只得衣不蔽体地撤退了。")
 				gain({e_exp:2})
 			}
-			if(ans<8 && rand(8)+1<month){
+			if (ans < 8 && (rand(2) == 0 || "evo3" in flag)){
 				pause()
 				show("在撤退途中，你听到了冒险者的脚步声。")
 				if(check("wis",slime_pow)>=0){
@@ -29,6 +29,10 @@ function slime(){
 					show("这里竟然埋伏着一只史莱姆。")
 					show("你想起要呼救，却被史莱姆堵住了嘴。")
 					gain({o_exp:3,s_exp:1},"史莱姆")
+					if ("evo1" in flag) {
+						show("体内的史莱姆粘液令你浑身发烫。")
+						gain({ drug_exp: 1 })
+					}
 				}
 			}
 		},
@@ -41,7 +45,7 @@ function slime(){
 	}
 	ev["slime2"]={
 		ev:function(){
-			ans=check("dex",slime_pow-3)
+			ans=check("max",slime_pow)
 			if(ans>=8){
 				show("你击穿了红色史莱姆的核心。")
 				show("史莱姆炸裂开来，你避开了它的媚药体液。")
@@ -49,13 +53,13 @@ function slime(){
 			}else if(ans>=0){
 				show("你击穿了红色史莱姆的核心。")
 				show("史莱姆炸裂开来，你被它的媚药体液溅了一脸，随后感觉到下腹部有一股热流。")
-				gain({money:slime_m,exp:slime_e,lust:3})
+				gain({money:slime_m,exp:slime_e,drug_exp:2})
 			}else{
 				show("你的攻击没有对红色史莱姆产生效果。")
 				show("你被它的媚药体液喷了一脸，随后感觉到下腹部有一股热流。")
-				gain({lust:4})
+				gain({drug_exp:3})
 			}
-			if(ans<8 && rand(8)+1<month){
+			if (ans < 8 && (rand(2) == 0 || "evo3" in flag)){
 				pause()
 				show("在你因为媚药的效果迷迷糊糊时，一个史莱姆从天花板掉了下来。")
 				if(check("dex",slime_pow)>=0){
@@ -64,7 +68,11 @@ function slime(){
 					show("你大意了，没有闪。")
 					show("你的身体被史莱姆裹住，动弹不得，然后被史莱姆侵入了身体。")
 					gain({v_exp:3,s_exp:1},"史莱姆")
-					if(rand(4)==0)gainbuff("怀孕：史莱姆")
+					if (rand(4) == 0 || (rand(2) == 0 && "evo2" in flag))gainbuff("怀孕：史莱姆")
+					if ("evo1" in flag) {
+						show("体内的史莱姆粘液令你浑身发烫。")
+						gain({ drug_exp: 1 })
+					}
 				}
 			}
 		},
@@ -77,21 +85,21 @@ function slime(){
 	}
 	ev["slime3"]={
 		ev:function(){
-			ans=check("dex",slime_pow-3)
+			ans=check("max",slime_pow)
 			if(ans>=8){
 				show("你击穿了黄色史莱姆的核心。")
 				show("史莱姆炸裂开来，你避开了它的利尿体液。")
 				gain({money:slime_m,exp:slime_e})
-			}else if(ans>=0){
+			} else if (ans >= 0) {
 				show("你击穿了黄色史莱姆的核心。")
-				show("史莱姆炸裂开来，你被它的利尿体液溅了一脸，片刻之后你就憋不住了，只能找了个没人的角落方便。")
-				gain({money:slime_m,exp:slime_e,u_exp:1})
-			}else{
+				show("史莱姆炸裂开来，你被它的利尿体液溅了一脸，片刻之后你就憋不住了，只能找一个没人的角落解决。")
+				gain({ money: slime_m, exp: slime_e, u_exp: 1})
+			} else{
 				show("你的攻击没有对黄色史莱姆产生效果。")
-				show("你被它的利尿体液喷了一脸，片刻之后你就憋不住了，只能找了个没人的角落方便。")
-				gain({u_exp:2})
+				show("你被它的利尿体液喷了一脸，片刻之后你就憋不住了，只能找了找一个没人的角落解决。")
+				gain({ u_exp: 2})
 			}
-			if(ans<8 && rand(8)+1<month){
+			if (ans < 8 && (rand(2)==0||"evo3" in flag)){
 				pause()
 				show("正当你在排尿时，你感到屁股一凉。")
 				if(check("str",slime_pow)>=0){
@@ -100,7 +108,11 @@ function slime(){
 				}else{
 					show("你手足无措地被史莱姆侵犯了后穴。")
 					gain({a_exp:3,s_exp:1},"史莱姆")
-					if(rand(4)==0)gainbuff("怀孕：史莱姆")
+					if (rand(4) == 0 || (rand(2) == 0 && "evo2" in flag))gainbuff("怀孕：史莱姆")
+					if ("evo1" in flag) {
+						show("体内的史莱姆粘液令你浑身发烫。")
+						gain({ drug_exp: 1 })
+					}
 				}
 			}
 		},
@@ -115,7 +127,7 @@ function slime(){
 		ev:function(){
 			show("你失足掉进了史莱姆池中。")
 			show("当你勉强爬出来时，你身上沾满了全部类型的史莱姆粘液。")
-			gain({u_exp:2,e_exp:2,lust:4,s_exp:2})
+			gain({e_exp:2,drug_exp:4,s_exp:2,u_exp:2},"史莱姆",false)
 		},
 		town:false,
 		once:true,
@@ -125,25 +137,74 @@ function slime(){
 		start:2,
 		end:2
 	}
-	ev["slime_rare"]={
-		ev:function(){
+	ev["slime_evo"] = {
+		ev: function () {
+			show("会长公布了一个坏消息：")
+			show("最近史莱姆族群发生了进化。")
+			show("它们变得更强，并且会附加媚药效果。")
+			slime_pow += 2
+			gainflag("evo1")
+		},
+		town: true,
+		once: true,
+		chance: function () {
+			if (week - chapter_startweek >= 8) return 0.4
+		},
+		start: 2,
+		end: 2
+	}
+	ev["slime_evo2"] = {
+		ev: function () {
+			show("会长公布了一个坏消息：")
+			show("最近史莱姆族群发生了进化。")
+			show("它们变得更强，并且有更高几率导致怀孕。")
+			slime_pow += 2
+			gainflag("evo2")
+		},
+		town: true,
+		once: true,
+		chance: function () {
+			if (week - chapter_startweek >= 8) return 0.4
+		},
+		start: 2,
+		end: 2
+	}
+	ev["slime_evo3"] = {
+		ev: function () {
+			show("会长公布了一个坏消息：")
+			show("最近史莱姆族群发生了进化。")
+			show("它们变得更强，并且学会了团队配合。")
+			slime_pow += 2
+			gainflag("evo3")
+
+		},
+		town: true,
+		once: true,
+		chance: function () {
+			if (week - chapter_startweek >= 4) return 0.4
+		},
+		start: 2,
+		end: 2
+	}
+	ev["slime_rare"] = {
+		ev: function () {
 			show("你遇到了一只刀枪不入的史莱姆。")
-			if(check("wis",slime_pow+3)){
+			if (check("wis", slime_pow + 6)) {
 				show("你注意到它并不防火。")
-				gain({money:slime_m*3,exp:slime_e*3})
-			}else{
+				gain({ money: slime_m * 3, exp: slime_e * 3 })
+			} else {
 				show("你累得满身大汗，不得不停下来休息。")
 				show("它却依然像一块石头一样纹丝不动。,true")
 				show("你不禁怀疑自己是否将一块石头看成了史莱姆。")
 			}
 		},
-		town:false,
-		once:true,
-		chance:function(){
+		town: false,
+		once: true,
+		chance: function () {
 			return 0.1
 		},
-		start:2,
-		end:2
+		start: 2,
+		end: 2
 	}
 	ev["slime_girl"]={
 		ev:function(){
@@ -151,6 +212,8 @@ function slime(){
 			show("她用粘液构成的身体向你挥出软趴趴的一拳，然后被你轻易打倒。")
 			show("你拒绝思考武道家遇到了什么。")
 			gain({money:slime_m,exp:slime_e})
+			gainflag("slimegirl",1)
+			if (getflag("slimegirl") >= 4) setachievement("全收集")
 		},
 		town:false,
 		once:true,
@@ -172,6 +235,8 @@ function slime(){
 				show("你带着愧疚感将其消灭。")
 				gain({money:slime_m,exp:slime_e})
 			}
+			gainflag("slimegirl", 1)
+			if (getflag("slimegirl") >= 4) setachievement("全收集")
 		},
 		town:false,
 		once:true,
@@ -188,6 +253,8 @@ function slime(){
 			show("你果断地撤退了。",true)
 			show("你突然感觉到有些不对劲。")
 			show("为什么是会长？")
+			gainflag("slimegirl", 1)
+			if (getflag("slimegirl") >= 4) setachievement("全收集")
 		},
 		town:false,
 		once:true,
@@ -217,10 +284,12 @@ function slime(){
 			show("你试图和她们战斗，但继承了你的特质的史莱姆娘总能反制你的动作。")
 			show("你被制服，囚禁在粘液沼泽的深处。",true)
 			show("在那之后，你不断地生下史莱姆的孩子——直到一天，一个外表和你一模一样的史莱姆娘诞生了。")
-			show("她拿起了你的装备，宣称要以你的身份回到冒险者公会。")
-			show("你沉浸在被史莱姆填满身体的触感当中，无暇关注她说了什么。",true)
-			show("结局：史莱姆家族计划")
+			show("她拿起了你的装备，宣称要以你的身份回到冒险者公会，并将更多人带进这个家庭。")
+			show("你沉浸在被史莱姆填满身体的触感当中，并没有听清她说了什么。",true)
+			show("结局：史莱姆的家族")
 			gameover=true
+			endofgame("史莱姆的家族")
+
 		},
 		town:false,
 		once:true,
@@ -239,6 +308,8 @@ function slime(){
 			show("你极限地避开了。")
 			show("你很好奇哪位冒险者会有这样的招式。")
 			gain({money:slime_m,exp:slime_e})
+			gainflag("slimegirl", 1)
+			if (getflag("slimegirl") >= 4) setachievement("全收集")
 		},
 		town:false,
 		once:true,
@@ -261,7 +332,7 @@ function slime(){
 				pause()
 				show("由于出产的影响，你分泌出了乳汁。")
 				gain({b_exp:5})
-				gainbuff("母乳体质")
+				if(!("母乳体质"in buff)) gainbuff("母乳体质")		
 			}
 		},
 		town:true,
@@ -272,46 +343,58 @@ function slime(){
 	ev["slime_boss"]={
 		ev:function(){
 			show("你前去讨伐巨型史莱姆。")
-			slime_boss_str=slime_pow+15
+			slime_boss_pow=slime_pow+5
+			slime_boss_num=1
+			slime_boss_hp =3
+
 			if(op["会长"].val>=1 && rand(5)==0){
 				show("正当你要进入首领所在的区域时，你看到会长神清气爽地走了出来。")
 				show("会长拍了拍你的肩膀，表示自己已经削弱了首领的战力，接下了就交给你了。")
 				show("你瞠目结舌地看着会长顶着浑圆的肚子离开。")
 				gainop("会长")
-				slime_boss_str-=10
+				slime_boss_hp-=1
 				show("你进去之后，发现巨型史莱姆的身子比传闻中的要小不少。")
 			}
-			var s0=slime_boss_str
 			pause()
-			if(check("wis",slime_pow+5)>=0){
-				show("你毫不吝惜地用魔法轰炸着史莱姆。")
-				show("巨型史莱姆的身体被炸掉了一大块，随后又恢复成球形。",true)
-				slime_boss_str-=10
-				show("")
-			}
-			if(check("str",slime_pow+5)>=0){
-				show("你猛击着巨型史莱姆。")
-				show("巨型史莱姆的身体被你劈成了两半，但较大的部分还在继续活动。",true)
-				slime_boss_str-=10
-				show("")
-			}
-			if(slime_boss_str==s0)show("你的攻击没有对巨型史莱姆产生效果。",true)
-			show("巨型史莱姆的身躯向你压了过来。")
-			if(check("dex",slime_boss_str)>=0){
-				show("你乘机贯穿了它的核心。")
-				gain({money:slime_m*5,exp:slime_e*5})
-//				gainbuff("讨伐证明：巨型史莱姆")
-				chapter=3
-				chapter_startweek=week
+			var round=0
+			while (slime_boss_num >= 1) {
+				var ans = check("max", slime_pow + 5)
+				round++
+				if (ans >= 0 && (rand(3) + 1 < slime_boss_num || slime_boss_hp <= 1)) {
+					if (slime_boss_num == 1) show("你消灭了巨型史莱姆的最后一个分身")
+					else show("你消灭了巨型史莱姆的分身")
+					slime_boss_num -= 1
+				} else if (ans >= 0) {
+					show("你的攻击对巨型史莱姆造成了显著的伤害。")
+					show("巨型史莱姆分裂了。")
+					slime_boss_num += 1
+					slime_boss_hp -= 1
+				} else {
+					show("你的攻击好像击穿了巨型史莱姆的身体，又好像什么都没打中。")
+				}
 				pause()
-				show("你的冒险者等级提升了。")
-
-			}else{
-				show("你没能躲开，被它吞进体内。",true)
-				show("当你被冒险者救出来时，你浑身上下的每一个洞都塞满了史莱姆。")
-				gain({v_exp:10,a_exp:10,o_exp:10,p_exp:10,u_exp:10,s_exp:10},"巨型史莱姆")
-				gainbuff("怀孕：史莱姆")
+				if (slime_boss_num >= 1) {
+					show("分裂成" + slime_boss_num + "份的巨型史莱姆向你袭来")
+					var tt = randomattack(slime_boss_num, 2, null, true, 4)
+					var u=rand(4)
+					if (tt > u && rand(2)==0) {
+						show("你立足不稳，摔倒在粘液池当中，随后被史莱姆粘液淹没。", true)
+						show("当你被冒险者救出来时，你浑身上下的每一个洞都塞满了史莱姆。")
+						show("", true)
+						gain({ v_exp: 10, a_exp: 10, o_exp: 10, p_exp: 10, u_exp: 10, s_exp: 10 }, "巨型史莱姆")
+						gainbuff("怀孕：史莱姆")
+						return
+					} else show("你忍受着史莱姆粘液的奇特触感。")
+					if (round >= 5) {
+						pause()
+						show("随着战斗的进行，你的身上沾满了媚药粘液。")
+						gain({ drug_exp: 1 })
+					}
+				}
+				show("", true)
 			}
+			gain({ money: slime_m * 5, exp: slime_e * 5 })
+			nextchapter()
 		},
 		town:false,
 		chance:function(){

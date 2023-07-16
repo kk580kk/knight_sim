@@ -1,5 +1,7 @@
+prostitute_firstweek = -100000
+
 function prostitute(){
-	ev["prostitute"]={
+	/*ev["prostitute"]={
 		ev:function(){
 			show("你遇到了多日不见的武道家，她看起来从哥布林监禁造成的创伤当中恢复了一些。")
 			show("她表示自己在从事一份收入不菲的新职业，建议你前来试一试。")
@@ -15,6 +17,7 @@ function prostitute(){
 			gainbuff("契约：娼妇")
 			gainflag("娼妇",1)
 			prostitute_week=week
+			prostitute_cnt=0
 		},
 		town:true,
 		once:true,
@@ -23,122 +26,76 @@ function prostitute(){
 			if(getop("武道家")<0 && ("负债"in buff) && (status.money<0) && !("娼妇" in flag)) return 1
 		},
 		start:2
-	}
+	}*/
 	ev["prostitute2"]={
 		ev:function(){
 			show("你穿着暴露的衣服，在娼馆的客人面前初次亮相。")
+			if(status.name == "战士")show("“今晚的新人是——战士。这一双腿曾经踢翻了无数敌人，如今却要在各位的面前打开。”")
+			if (status.name == "宝藏猎人") show("“今晚的新人是——宝藏猎人。她为了财富踏遍了魔物的巢穴，最后发现还是我们这儿金币又多又快活！”")
+			if (status.name == "神官") show("“今晚的新人是——这位的身份可要保密，不然教会准得找我麻烦。”")
+			if (status.name == "骑士") show("“今晚的新人是——骑士。众所周知，女骑士在面对兽人的肉棒时毫无胜算，不知道她在面对人类的肉棒时表现又会如何？”")
+			if (status.name == "圣骑士") show("“今晚的新人是——圣骑士。据说圣骑士只有在直面淫邪时才能积蓄圣印的力量，今晚各位可不得帮她好好充能吗？”")
+			if (status.name == "复仇者") show("“今晚的新人是——复仇者。愿她今晚可以放下对魔物的仇恨，感受到人类的爱。")
+			if (status.name == "术士") show("“今晚的新人是——术士。谁想狠狠地教育一下这个沉迷黑暗力量的小丫头？”")
+			if (status.name == "被诅咒的骑士") show("“今晚的新人是——被诅咒的骑士。如果有什么能比女骑士更受我们这个业界的欢迎，自然就是受到淫魔诅咒的女骑士！”")
+			if (status.name == "放逐者") show("“今晚的新人是——放逐者。她只是因为一丁点魅魔血统就遭到了放逐。当然，在我们这里，她的血统是个加分项。”")
+			pause()
 			if(status.v_virgin==""){
-				show("你亲手张开阴部，向他们展示了你未经人事的小穴。")
-				gain({e_exp:3,m_exp:2})
+				show("你被要求亲手张开阴部，向他们展示了你未经人事的小穴。")
+				gain({e_exp:2})
 				pause()
 				show("娼馆公开拍卖了你的处女。")
 				show("成交价达到了一个惊人的数额，但你只分到了一小部分。")
-				gain({v_exp:4,s_exp:1,money:150},"客人")
+				gain({v_exp:4,s_exp:1,money:200},"客人")
+				if (status.v_virgin == "") {
+					show("客人表示自己买下的是处女，所以刚才那次不算。")
+					gain({ v_exp: 4, s_exp: 1}, "客人")
+				}
+				if (status.v_virgin == "") {
+					show("直到体力耗尽为止，客人反复地尝试着。")
+					gain({ v_exp: 4, s_exp: 1 }, "客人")
+				}
 			}else{
 				if(status.v_lv>=3)
-					show("你亲手张开阴部，向他们展示了你经验丰富的小穴。")
+					show("你被要求亲手张开阴部，向他们展示了你经验丰富的小穴。")
 				else
-					show("你亲手张开阴部，向他们展示了你几乎全新的小穴。")
-				gain({e_exp:3,m_exp:2})
+					show("你被要求亲手张开阴部，向他们展示了你几乎全新的小穴。")
+				gain({ e_exp: 2 })
 				pause()
 				show("娼馆公开拍卖了你的初次接客。")
 				show("成交价达到了一个可观的数额，但你只分到了一小部分。")
-				gain({v_exp:4,s_exp:1,money:75},"客人")
+				gain({v_exp:4,s_exp:1,money:100},"客人")
 			}
 			gainflag("娼妇",1)
+			gainbuff("卖春价格", 50)
+			if ("魅魔的香水" in buff) {
+				show("由于魅魔的香水，你的卖春价格提高了。")
+				gainbuff("卖春价格", 25)
+				prostitute_bonus += 25 
+			}
 			prostitute_week=week
+			prostitute_firstweek = week
 		},
 		town:true,
 		once:true,
 		chance:function(){
-			if("契约：娼妇" in buff) return prostitute_chance()*5
+			if("契约：娼妇" in buff) return 10
 		}
 	}
 	ev["prostitute_dog"]={
 		ev:function(){
-			show("你前往娼馆工作。",true)
-			show("武道家正以全裸的姿态在舞台上爬行，时不时朝着客人摇晃插在她肛门里的尾巴。")
-			show("一个客人看中了她，牵起她项圈上的链子向着房间走去。",true)
-			show("娼馆老板问你，听说许多女冒险者都在被俘时受到过母狗化的训练，不知道你是否有份。")
-			show("你承认了自己被哥布林监禁的经历。",true)
-			show("第二天的母狗表演变成了双人节目。")
-			show("两条母狗互舔的样子看得客人们血脉贲张。")
-			gain({v_exp:2,a_exp:2,o_exp:2,e_exp:2,u_exp:1,les_exp:3})
-			show("",true)
-			show("客人等不及将你带进房间，在舞台上当众插入了你湿淋淋的小穴。")
-			gain({v_exp:3,s_exp:1,e_exp:3,p_exp:1,money:75},"客人")
-			gainflag("娼妇",1)
-			prostitute_week=week
+			show("不知道从何时起，娼馆的客人都知道了月夜雌兽的真身。")
+			show("你变得更受欢迎了——尤其是在满月时。", true)
+			gainbuff("卖春价格", 25)
+			prostitute_bonus +=25 
+			if (prostitute_bonus >= 50) setachievement("名人堂")
 		},
 		town:true,
 		once:true,
 		chance:function(){
-			if(past_event.includes("prostitute2") && "契约：娼妇" in buff && past_event.includes("goblin_prison")) return prostitute_chance()
+			if ("卖春价格" in buff && "月夜雌兽"in buff) return 2
 		},
 		start:2
-	}
-	ev["prostitute_magic"]={
-		ev:function(){
-			show("娼馆老板询问你是否认识手头拮据的女冒险者。")
-			var v=getop("魔法师")
-			if(check("wis",month+20-v)>=0){
-				show("你觉得自己不能做这种带人进坑的事情。")
-			}else{
-				show("第二天，你介绍魔法师来娼馆工作。",true)
-				if(op["魔法师"]>0){
-					op["魔法师"].val-=10000
-					show("魔法师退出了冒险者公会。")
-					if("魔法师的恋人" in buff)
-						gainbuff("魔法师的恋人",-10000)
-				}
-				pause()
-				show("在魔法师首次卖春的当天，你有些困惑地收到了一笔分成。")
-				gain({money:50})
-				gainflag("娼妇",1)
-				gainflag("娼妇魔法师")
-			}
-		},
-		town:true,
-		once:true,
-		chance:function(){
-			if("契约：娼妇" in buff && getflag("娼妇")>=5 && op["魔法师"]!=null && (status.wis<status.lewd/2)) return 0.5
-		},
-		start:4
-	}
-	ev["prostitute_trainer"]={
-		ev:function(){
-			show("你前往娼馆工作。",true)
-			show("你被教官指名了。")
-			show("教官一边批评着现在的女冒险者日益淫乱的问题，一边狠狠地冲撞着你的身体深处。")
-			show("你哭着乞求他的原谅。",true)
-			show("完事之后，他私下多塞给你一些钱，并劝你早点从娼馆脱身。")
-			gain({b_exp:3,v_exp:5,p_exp:3,s_exp:2,money:80},"公会教官")
-			gainflag("娼妇",1)
-			prostitute_week=week
-		},
-		town:true,
-		once:true,
-		chance:function(){
-			if("契约：娼妇" in buff && getop("教官")>=2) return prostitute_chance()
-		},
-		start:3
-	}
-	ev["prostitute_trainer2"]={
-		ev:function(){
-			show("你前往娼馆工作。",true)
-			show("你被教官叫住。武道家和魔法师在里面垂首等候着。")
-			show("“公会一届一届换了多少冒险者了，改过了吗？换汤不换药啊！”")
-			show("“冒险者公会现在什么水平，就这么几个人，你"+status.name+"什么的都在卖春，你能出来卖吗？”")
-			show("“再下去要输兽人了，输完兽人输史莱姆，输完史莱姆输哥布林，接着就没得输了。”",true)
-			show("教官骂完之后愤愤不平地离开了。")
-			prostitute_week=week
-		},
-		town:true,
-		once:true,
-		chance:function(){
-			if("契约：娼妇" in buff && past_event.includes("prostitute_trainer") && past_event.includes("prostitute_dog")&& "娼妇魔法师"in flag) return prostitute_chance()
-		},
-		start:4
 	}
 
 	ev["prostitute3"]={
@@ -147,87 +104,139 @@ function prostitute(){
 			var ans=rand(5)
 			if(ans==0){
 				show("你温柔地侍奉着客人的肉棒。")
-				gain({v_exp:3,o_exp:3,b_exp:3,s_exp:2,money:50},"客人")
+				gain({ v_exp: 3, o_exp: 3, b_exp: 3, s_exp: 2, money: 50 + prostitute_bonus },"客人")
 			}else if(ans==1){
 				show("客人激烈地干着你的小穴，直到你失去意识。")
-				gain({v_exp:5,p_exp:3,s_exp:2,money:50},"客人")
+				gain({ v_exp: 5, p_exp: 3, s_exp: 2, money: 50 + prostitute_bonus },"客人")
 			}else if(ans==2){
 				show("客人在你身上使用了各种各样的调教工具。")
-				gain({a_exp:3,p_exp:6,u_exp:3,money:50},"客人")
+				gain({ b_exp:3, a_exp: 3, drug_exp:3, u_exp:3, p_exp: 6, money: 50 + prostitute_bonus },"客人")
 			}else if(ans==3){
 				show("你穿着暴露的服装在街头为娼馆拉客，吸引了不少异样的目光。")
-				gain({e_exp:5,money:50})
+				gain({ e_exp: 5, money: 50 + prostitute_bonus })
 			}else{
 				show("你为集体客提供了服务。")
-				gain({v_exp:3,a_exp:3,o_exp:3,b_exp:3,s_exp:4,money:100},"客人")
+				gain({ v_exp: 3, a_exp: 3, o_exp: 3, b_exp: 3, s_exp: 4, money: 100 + 2*prostitute_bonus },"客人")
 			}
 			gainflag("娼妇",1)
 			prostitute_week=week
 		},
 		town:true,
-		once:true,
+		once:false,
 		chance:function(){
-			if("契约：娼妇" in buff) return prostitute_chance()*2
+			if ("卖春价格" in buff) return prostitute_chance()*2
 		}
 	}
+	ev["prostitute4"] = {
+		ev: function () {
+			show("在你首次卖春一周年的纪念日那天，娼馆举办了庆祝活动。", true)
+			show("你在众人的怂恿下豪饮着掺了媚药的酒。")
+			gain({drug_exp:5})
+			pause()
+			show("直到客人尽兴为止，你以五个金币一次的优惠价格供人使用着身体。")
+			randomattack(prostitute_bonus + 25, 1, "客人", false, 5)
+			gain({ money: prostitute_bonus * 5 + 125})
 
-	ev["prostitute_quit"]={
-		ev:function(){
-			show("你前往娼馆提出赎身。")
-			show("赎身的费用比卖身要更高，老板解释这是制作魔法契约的工本费。")
-			gain({money:-250})
-			show("老板建议你在走之前举办一次引退活动，感谢一下长期以来照顾自己生意的客人——同时也是最后再赚一笔。",true)
-			show("引退活动当天，你的所有熟客都来了。活动最终变成了一次盛大的乱交派对。")
-			gain({v_exp:10,a_exp:10,b_exp:10,o_exp:10,u_exp:5,p_exp:5,money:100})
-			gainflag("娼妇",1)
-			gainbuff("契约：娼妇",-10000)
-			prostitute_week=week
+			gainflag("娼妇", 1)
+			prostitute_week = week
+			setachievement("感谢祭")
 		},
-		town:true,
-		once:true,
-		chance:function(){
-			if("契约：娼妇" in buff && status.money>=250 && past_event.includes("prostitute3")) return (status.money-250)/50
+		town: true,
+		once: true,
+		chance: function () {
+			if (past_event.includes("prostitute2") && "契约：娼妇" in buff && (week - 48 >= prostitute_firstweek)) return 5
 		}
 	}
-
-	ev["prostitute_return"]={
-		ev:function(){
-			show("最近你的手头有些拮据。")
-			show("你意识到只有一个地方可以解决你的经济问题。",true)
-			show("你来到娼馆，要求继续在这里工作。")
-			show("娼馆老板为难地表示，你已经宣布引退了——他不喜欢假引退这种欺骗客人的行为。",true)
-			if(check("wis",status.lewd/3+15)>=0){
-				show("你不认为一个骗子会不喜欢欺骗。")
-				show("你不知道他的话里还藏着多少陷阱，决定离开。")
-			}else{
-				show("为了证明自己这次回到娼馆里的决心，你签下了一份用一枚金币卖身的契约，赎身费用则是一个你不可能付得起的天文数字。")
-				gain({money:1})
-				gainbuff("契约：娼妇")
-				show("但这只是对老板道歉，你还需要对客人道歉。")
-				show("",true)
-				show("娼馆公开拍卖了你回归后的初次接客——中拍者还会免费获得一个赠品：为你的屁股挑选一个纹身图案的权力。")
-				show("成交价达到了一个可观的数额，但你一个铜子也没有拿到：毕竟这是对你的惩罚。")
-				gain({v_exp:3,s_exp:1},"客人")
-				pause()
-				show("完事之后，客人在你的屁股上写下了娼妇的字样。")
-				show("娼馆老板请来的纹身师施展魔力，将这个词永久固定在了你的屁股上。")
-				gain({a_exp:2,p_exp:10})
-				gainbuff("纹身：娼妇")
+	ev["prostitute_princess"] = {
+		ev: function () {
+			show("你前往娼馆工作。", true)
+			show("一位年迈的客人突然问起你是否听说过公主骑士的踪迹。",true)
+			if (past_event.includes("fallen_princess")) {
+				show("你提起自己遭遇公主骑士的经历并和她较量的经历——但你没敢提较量了什么")
+				show("你告诉对方遭遇的地点，并提醒他，公主骑士可能有些神志不清")
+			} else {
+				show("你提起自己发现公主骑士装备的经历，将装备失落在迷宫里的她恐怕已经遭遇了不幸")
 			}
+			show("客人听后感慨了一阵", true)
+			pause()
+			show("然后他要求你穿上公主骑士的装备进行角色扮演。")
+			gain({ v_exp: 6, a_exp: 3, o_exp: 2, b_exp: 2, s_exp: 3, money: 200 + prostitute_bonus }, "客人")
+			prostitute_week = week
+			pause()
+			show("在那之后，公主骑士play在娼馆大为流行")
+			gainbuff("卖春价格", 25)
+			prostitute_bonus += 25
+			gainflag("娼妇", 1)
+			if (prostitute_bonus >= 50) setachievement("名人堂")
 		},
-		town:true,
-		once:true,
-		chance:function(){
-			if(!("契约：娼妇"in buff)&& ("负债"in buff) && (status.money<0) && prostitute_chance()>=1) prostitute_chance()/2
+		town: true,
+		once: true,
+		chance: function () {
+			if (past_event.includes("prostitute2") && "契约：娼妇" in buff && ("胸甲" in flag || "裙甲" in flag)) return prostitute_chance()
+		}
+	}
+	ev["prostitute_bonus"] = {
+		ev: function () {
+			show("不知道从何时起，娼馆的客人都知道了你有一次在潜入兽人部落时，沉迷于偷窥群交，导致被兽人抓住的事情。")
+			show("客人们对你的变态程度肃然起敬。",true)
+			gainbuff("卖春价格", 25)
+			prostitute_bonus += 25
+			if (prostitute_bonus >= 50) setachievement("名人堂")
+		},
+		town: true,
+		once: true,
+		chance: function () {
+			if (past_event.includes("prostitute2")  && "契约：娼妇" in buff && "侦查敌情" in flag) return 2
+		}
+	}
+	ev["prostitute_bonus2"] = {
+		ev: function () {
+			show("不知道从何时起，娼馆的客人都知道了你身上有着守护处女的魔纹，任何插入的尝试都会被引导到后庭。")
+			show("你本以为这会影响生意，结果想要尝试淫乱处女的客人络绎不绝。", true)
+			gainbuff("卖春价格", 25)
+			prostitute_bonus += 25
+			if (prostitute_bonus >= 50) setachievement("名人堂")
+		},
+		town: true,
+		once: true,
+		chance: function () {
+			if (past_event.includes("prostitute2") && "契约：娼妇" in buff && "守护魔纹" in buff) return 2
+		}
+	}
+	ev["prostitute_bonus3"] = {
+		ev: function () {
+			show("不知道从何时起，娼馆的客人都知道了你在决斗中击败堕落公主骑士的壮举。")
+			show("很多人都想和你来一场这样的决斗。", true)
+			gainbuff("卖春价格", 25)
+			prostitute_bonus += 25
+			if(prostitute_bonus>=50) setachievement("名人堂")
+		},
+		town: true,
+		once: true,
+		chance: function () {
+			if (past_event.includes("prostitute2") && "契约：娼妇" in buff && "传奇克星" in buff) return 2
+		}
+	}
+	ev["prostitute_bonus4"] = {
+		ev: function () {
+			show("不知道从何时起，娼馆的客人都知道了义警的真身。")
+			show("你不明白为什么人们愿意花钱被义警处刑。", true)
+			gainbuff("卖春价格", 25)
+			prostitute_bonus += 25
+			if (prostitute_bonus >= 50) setachievement("名人堂")
+		},
+		town: true,
+		once: true,
+		chance: function () {
+			if (past_event.includes("prostitute2") && "契约：娼妇" in buff && "常识改变：义警行动" in buff) return 1
 		}
 	}
 }
 
-function prostitute_chance(){
-	var ans=(week-prostitute_week)*0.2
-	if(status.money<0)ans-=status.money/100
-	ans=ans*(1+flag["娼妇"]*0.1)
-	if("纹身：娼妇" in buff)ans=ans*1.3
-	if(ans<0||ans==null)return 0
+function prostitute_chance() {
+	if (!("卖春价格"in buff)) return 0
+	var ans = (week - prostitute_week) * 0.2
+	if (status.money < 0) ans -= status.money / 100
+	if (ans < 0 || ans == null) return 0
 	return ans
 }
