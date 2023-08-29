@@ -41,7 +41,7 @@ function finalboss(){
 				gain({money:succubus_m,exp:succubus_e})
 			}else{
 				show("你按照魅魔的指示开始自慰。")
-				masturbation(5)
+				masturbation()
 			}
 		},
 		town:false,
@@ -59,8 +59,12 @@ function finalboss(){
 				show("你没有中招。")
 				gain({money:succubus_m,exp:succubus_e})
 			}else{
-				show("你觉得自己没有中招。")
-				gainbuff("催眠")
+				if ("破雾者" in buff) {
+					show("由于破雾者的效果，催眠很快就解除了。")
+				} else {
+					show("你觉得自己没有中招。")
+					gainbuff("催眠")
+				}
 			}
 		},
 		town:false,
@@ -148,10 +152,15 @@ function finalboss(){
 				gainbuff("公共厕所", 1)
 			} else if (ans == 1) {
 				show("当你恢复意识时，你正在触手洞窟里泡精液浴。")
-				gain({ s_exp: 10 }, "触手")
+				gain({ s_exp: 10 }, "触手", true)
 			} else {
-				show("当你恢复意识时，你正在和魔法师共享一根双头假阳具，而武道家骑在刺客的身上扭动身体。")
-				gain({ v_exp: 6, b_exp: 3, o_exp: 5, les_exp: 10, a_exp: 3, s_exp: 1 }, "魔法师")
+				if (getop("魔法师") >= 0 && getop("武道家") >= 0 && getop("刺客") >= 0) {
+					show("当你恢复意识时，你正在和魔法师共享一根双头假阳具，而武道家骑在刺客的身上扭动身体。")
+					gain({ v_exp: 6, b_exp: 3, o_exp: 5, les_exp: 10, a_exp: 3, s_exp: 1 }, "魔法师")
+				} else {
+					show("当你恢复意识时，你正在街头公开自慰。")
+					gain({ a_exp: status.m_lv + 3, v_exp: status.m_lv + 3, m_exp: status.m_lv + 3, e_exp: status.m_lv + 3 }, "自慰", true)
+				}
 			}
 			gainbuff("催眠",-10000)
 		},
@@ -165,14 +174,14 @@ function finalboss(){
 
 	ev["guild_succubus"] = {
 		ev: function () {
-			show("会长召集了公会的成员。")
+			show("会长召集了冒险者公会的成员。")
 			show("她宣布魔王要回来了，她感受到了对方的魔力。")
 			show("她掀开上衣，展示出自己的小腹。")
 			show("那里有着一个心形纹路，散发着微弱的粉色光芒。", true)
 			show("会长表示自己当年在讨伐魔王时受到了诅咒，在与魔物交合时能够获得加倍的快感，却无法对人类的身体产生任何反应。")
 			show("魔王认为这样就会让她堕落，但她坚持下来了。")
 			show("她也会继续坚持下去。")
-			op["会长"].prison = week + 2
+			op["会长"].prison = week + 4
 		},
 		town: true,
 		once: true,
@@ -185,7 +194,7 @@ function finalboss(){
 
 	ev["guild_succubus2"]={
 		ev:function(){
-			show("你前往公会办理手续时，发现会长只穿着内衣。")
+			show("你前往冒险者公会办理手续时，发现会长只穿着内衣。")
 			show("会长表示，这是为了让别人时刻监督自己身上淫纹的恶化程度。")
 			gainop("会长")
 		},
@@ -200,7 +209,7 @@ function finalboss(){
 	}
 	ev["guild_succubus3"]={
 		ev:function(){
-			show("会长召集了公会的成员。")
+			show("会长召集了冒险者公会的成员。")
 			show("她宣布自己已经坚持不下去了，然后她身上的淫纹发出了耀眼的光芒。")
 			show("当光芒散去时，会长已经变成了魅魔。")
 			show("人群一片慌乱。",true)
@@ -237,6 +246,15 @@ function finalboss(){
 			}
 			show("“是时候给过去的恩怨做个了断了。”")
 			show("教官加入了你的队伍。")
+			if ("常识改变：公会新政" in buff && !("破雾者" in buff)) {
+				show("“我只是刚好和你们同路。”")
+				show("不知何时，一个戴着兜帽的男人已经站在队伍当中，随着你们一起出发。")
+			}
+			if ("失衡" in buff && getop("神秘少女") >= 0) {
+				show("“带着混乱的真气挑战魔王绝非明智之举。”")
+				show("你和神秘少女的目光相触。")
+				gain({ orgasm: getbuff("失衡") })
+			}
 		},
 		town:true,
 		once:true,
@@ -270,7 +288,7 @@ function finalboss(){
 			}else{
 				show("你双手握住兽人的巨根，勉强地吞吐着前端。")
 				show("兽人对此并不满意，按着你的头一下子就顶到了喉咙的深处。")
-				gain({ o_exp: 20, p_exp: 10, s_exp: 10 }, "口天王")
+				gain({ o_exp: 20, p_exp: 5, s_exp: 5 }, "口天王")
 				pause()
 				var cnt2=cnt-status.orgasm
 				if(cnt2<=0){
@@ -303,13 +321,13 @@ function finalboss(){
 				if ("母乳体质" in buff) {
 					show("榨乳装置的吸盘牢牢地吸附在你的胸口。")
 					show("强烈的吸力令你的母乳喷涌而出。")
-					gain({ b_exp: 30, p_exp: 10 }, "胸天王")
+					gain({ b_exp: 30, p_exp: 5 }, "胸天王")
 				} else {
 					show("榨乳装置的吸盘牢牢地吸附在你的胸口。")
 					show("强烈的吸力将你的胸部吸得生疼。")
-					show("见到你没有产出母乳，乳天王按下了一个按钮。")
+					show("见到你没有立刻产出母乳，乳天王按下了一个按钮。")
 					show("两针催乳剂被打进了你的乳头，随后，母乳喷涌而出。")
-					gain({ b_exp: 20, p_exp: 20 }, "胸天王")
+					gain({ b_exp: 20, p_exp: 10 }, "胸天王")
 					gainbuff("母乳体质")
 				}
 				pause()
@@ -349,7 +367,7 @@ function finalboss(){
 					show("你被魅魔催眠了。",true)
 					show("当你的意识恢复时，你正跨坐在魅魔的腰上，她的肉棒大半没入了你的肛门。")
 					show("你挣扎着想要起身，但每次尝试都会刺激到肠壁内侧，令你的身体失去力量再次落下。")
-					gain({ a_exp: 20, p_exp: 5, les_exp: 10, s_exp: 5 },"菊天王")
+					gain({ a_exp: 20, p_exp: 5, les_exp: 5, s_exp: 5 },"菊天王")
 					pause()
 					var cnt2=cnt-status.orgasm
 					if(cnt2<=0){
@@ -388,7 +406,7 @@ function finalboss(){
 			show("",true)
 			show("在同伴做出了壮烈的牺牲后，你总算是来到了王座前。")
 			show("“居然能做到这种程度，就让我称赞你一下吧。”魔王说道，“但是，你也就到此为止了。”")
-			var hp = 4
+			var hp = 5
 			var flag = 0
 			show("这一刻，你想起了你的同伴们。")
 			show("想起了她们做出的牺牲……")
@@ -400,7 +418,7 @@ function finalboss(){
 				show("你意识到了自己应该做什么。")
 				if (!("冒险者的反击" in buff)) {
 					gainbuff("冒险者的反击")
-					show("在对抗魅魔时，获得等同于百合中毒等级的加值")
+					show("在对抗魅魔时，减少等同于百合中毒等级的挑战难度")
 					succubus_pow -= status.les_lv
 				}
 				show("")
@@ -414,12 +432,23 @@ function finalboss(){
 			}
 
 			show("你下定决心，发起进攻。")
+
+			slayer()
+
 			show("魔王剩余生命值：" + hp)
 			var cnt2 = cnt - status.orgasm
 			show("淫纹上的数字：" + cnt2)
+			show("")
+			var flag2=0
+			if ("常识改变：公会新政" in buff && !("破雾者" in buff)) {
+				show("奇怪的雾气在王座厅里弥漫。")
+				show("“不必在意我，你们继续打。”戴着兜帽的男人一边画着魔法阵一边说道。")
+				show("")
+				flag2 = 1
+			}
 
 			while (hp > 0) {
-				var ans = check("max", succubus_pow + 10)
+				var ans = check("max", succubus_pow + 6)
 				if (ans >= 10) {
 					if ("冒险者的反击" in buff) {
 						var vv = rand(3)
@@ -431,6 +460,13 @@ function finalboss(){
 							show("你吸着魔王贫瘠的胸部，魔王看起来快要哭了。")
 					} else show("你的攻击命中了魔王的要害，魔王受到重创。")
 					hp -= 2
+					show("魔王剩余生命值：" + hp)
+					if (rand(3) == 0) {
+						if ("冒险者的反击" in buff) show("由于要害被命中，魔王高潮了！")
+						else show("由于要害被命中，魔王漏尿了！")
+						show("你不慎吸入了充满淫靡魔力的气息。")
+						gain({ orgasm: rand(3) + 1 }, "魔王", true)
+					}
 				} else if (ans >= 0) {
 					if ("冒险者的反击" in buff) {
 						var vv = rand(3)
@@ -443,17 +479,32 @@ function finalboss(){
 					} else
 						show("你的攻击命中了魔王。")
 					hp -= 1
+					show("魔王剩余生命值：" + hp)
 				} else {
 					show("你的攻击被魔王躲开了。")
+					show("魔王剩余生命值：" + hp)
 				}
-				show("魔王剩余生命值：" + hp)
-				pause()
+				show("")
 				if (hp > 0) {
 					var a2 = rand(3)
 					if (flag > 0) {
 						show("魔王处于失神状态。")
 						flag = 0
 						a2 = 2
+					} else if ("常识改变：公会新政" in buff && !("破雾者" in buff) && (rand(2) == 0 || flag2 == 1)) {
+						flag2 = 0
+						if (a2 == 0) {
+							show("由于迷雾的影响，魔王进行着生疏的自慰。")
+						} else if (a2 == 1) {
+							show("由于迷雾的影响，魔王承认自己明明是魅魔的领袖，却还是处女。")
+							show("魔王受到精神伤害。")
+							hp -= 1
+							show("魔王剩余生命值：" + hp)
+						} else {
+							show("由于迷雾的影响，魔王不受控制地大量漏尿。")
+							show("你不慎吸入了充满淫靡魔力的气息。")
+							gain({ orgasm: rand(3) + 1 }, "魔王", true)
+						}
 					} else if (a2 == 0) {
 						show("魔王看了你一眼，你的子宫内立刻就产生了反应。")
 						gain({ orgasm: rand(10) + 1 }, "魔王", true)
@@ -464,7 +515,7 @@ function finalboss(){
 						show("你躲开了魔王的攻击。")
 					}
 					var cnt2 = cnt - status.orgasm
-					if (cnt2 <= 0) {
+					if (cnt2 <= 0 && hp > 0) {
 						show("淫纹上的数字变成了0。")
 						show("你感到子宫内有一种奇妙的感觉。")
 						show("你意识到自己无法抗拒，也不必抗拒。")
@@ -521,10 +572,32 @@ function finalboss(){
 			}
 			if (cnt - status.orgasm==1)setachievement("一血传奇")
 
+
+			if (cnt - status.orgasm <= 0) {
+				show("终于，魔王倒下了。")
+				show("与此同时，淫纹上的数字也变成了0。。")
+				show("你感到子宫内有一种奇妙的感觉。")
+				show("你意识到自己无法抗拒，也不必抗拒。")
+				show("你躺倒在地，任凭快感传遍全身上下，体内体外的每一个位置。")
+				show("粉色的光芒笼罩了你，你抵达了前所未有的强烈高潮。")
+				show("当光芒散去时，你成为了魅魔。")
+				show("唯一值得庆幸的是，魔王已经倒下，没有人可以对你下命令。")
+				show("你望向失去主人的王座，产生了一个大胆的想法。")
+				show("")
+				show("等到会长走进王座厅时，坐在王座上的人已经变成了你。")
+				show("“失去了主人的号令，魅魔军团对这个世界的威胁只会变得更大。必须要有一个……魅魔王。”")
+				show("会长将信将疑地看着你。你不得不动用魔王的力量，让她接受你现编的设定。")
+				show("“今天发生的一切必须被遗忘。告诉他们，魔王已经死了。" + status.name + "与她同归于尽。走吧，离开这里！永远别再回来。”")
+				show("")
+				show("结局：旧王陨落")
+				endofgame("旧王陨落", true)
+				gameover = true
+				return
+			}
 			if ("高潮禁止" in buff) {
-				show("魔王无论如何都无法对你进行有效的攻击。")
+				show("由于高潮禁止的效果，魔王无论如何都无法对你进行有效的攻击。")
 				show("“这不公平！”在魔王的抗议中，你赢得了最后的胜利。")
-				setachievement("作弊")
+				setachievement("锁血外挂")
 			} else if ("冒险者的反击" in buff) {
 				show("终于，魔王倒下了。")
 				show("“要坏掉了！真的要坏掉了！”魔王如是说。")
@@ -536,11 +609,26 @@ function finalboss(){
 				show("淫纹上的数字停止了跳动。")
 			}
 			op["会长"].val+=10000
+			chapter = 6
+
+			if ("常识改变：公会新政" in buff && !("破雾者" in buff)) {
+				show("戴着兜帽的男人走上前侵犯了魔王。")
+				show("你头一次见到被侵犯得不停求饶的魅魔——到底是他太强，还是魔王太弱？")
+				show("")
+				show("由于讨伐魔王的功绩，公会会长的位置被传给了戴兜帽的男人。")
+				show("他接下了冒险者公会的烂摊子，随后进行了大刀阔斧的改革。")
+				show("人类不能做被性欲的魔物袭击的弱者，要成为用性欲袭击魔物的强者。")
+				show("这成为了冒险者的常识。")
+				show("新的时代，到来了。")
+				show("结局：新时代")
+				endofgame("新时代", true)
+				gameover = true
+				return
+			}
 
 			pause()
 			show("")
 			var max_op=4.5
-			chapter=6
 			var a1=0
 			if ("武道家的战友" in buff && getop("武道家") >= max_op) {
 				max_op = getop("武道家")
@@ -554,6 +642,7 @@ function finalboss(){
 				max_op = getop("刺客")
 				a1=3
 			}
+
 			if(status.v_virgin==""){
 				show("你们尝试了各种手段，也没能让会长从魅魔变回人类。")
 				show("会长和教官决定去向遥远国度的贤者寻求帮助，他们一同踏上了旅途。",true)
@@ -575,6 +664,17 @@ function finalboss(){
 				gameover=true
 
 				return
+			}
+			if ("常识改变：公会新政" in buff && !("破雾者" in buff)) {
+				show("你们尝试了各种手段，也没能让会长从魅魔变回人类。")
+				show("会长和教官决定去向遥远国度的贤者寻求帮助，他们一同踏上了旅途。", true)
+				show("由于讨伐魔王的功绩，公会会长的位置被传给了你。")
+				show("你接下了冒险者公会的烂摊子，忙得焦头烂额。", true)
+				show("你时不时地会产生一些古怪的念头。")
+				show("例如规定冒险者的裙子长度")
+				show("结局：会长的继承者")
+				gameover = true
+				endofgame("会长的继承者", true)
 			}
 			if(a1==1){
 				show("你们尝试了各种手段，也没能让会长从魅魔变回人类。")

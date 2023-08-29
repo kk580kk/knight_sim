@@ -40,6 +40,7 @@ function friendship(){
 		town: true,
 		once: false,
 		chance: function () {
+			if(chapter>1 && !("武道家的战友" in buff)) return 0
 			if (status.money <= 50) return 0
 			if (past_event.includes("fighter2") && op["武道家"].val >= 0) return 0.25
 		},
@@ -131,7 +132,7 @@ function friendship(){
 			show("你和武道家谈起自己碰到满月就会发作的雌兽本能。")
 			show("她表示自己也有类似的毛病，可以和你互相监督。")
 			show("", true)
-			show("结果，月夜雌兽的传说变成了月夜双雌兽。")
+			show("结果，月夜雌兽的传说变成了月夜双雌兽。","stable")
 			gain({ e_exp: 3, les_exp: 3, u_exp: 2 }, "武道家")
 			gainop("武道家")
 			if (!("武道家的战友" in buff)) gainbuff("武道家的战友")
@@ -155,17 +156,92 @@ function friendship(){
 				show("你刚打开门，立刻就被武道家按倒在床上。")
 				gain({ v_exp: 4, les_exp: 4 }, "武道家", true)
 				gainop("武道家")
-				show("事后你才发现她被魅魔催眠了。")
+				show("事后你才知道她被魅魔催眠了。")
 			}
 		},
 		town: true,
 		once: true,
 		chance: function () {
-			if (getop("武道家") > 1) return 0.5
+			if (getop("武道家") > 1) return 0.3
 		},
 		start: 5
 	}
 
+	ev["fighter_trap"] = {
+		ev: function () {
+			show("你和武道家被困在了陷阱房间里。")
+			show("解除机关的条件是喝完一桶精液。")
+			if (status.s_lv <= 3) {
+				show("你喝了几口却难以下咽。")
+				show("操控陷阱的魅魔临时追加了一条规则：喝不下的部分必须嘴对嘴地喂给同伴。")
+				gain({ s_exp: 3, o_exp: 3, les_exp: 3 }, "武道家")
+			} else {
+				show("你们齐心协力，将精液消灭干净。")
+				gain({ s_exp: 10 })
+			}
+			gainop("武道家")
+		},
+		town: false,
+		once: true,
+		chance: function () {
+			if ("武道家的战友"in buff && getop("武道家")>0) return 0.1
+		}
+	}
+	ev["magic_trap"] = {
+		ev: function () {
+			show("你和魔法师被困在了陷阱房间里。")
+			show("你们被施加了共享快感的魔法，捆绑在三角木马上。")
+			show("你起初还想忍耐，但魔法师那边传来了强烈的快感。")
+			gain({ orgasm: getop("魔法师") })
+			show("你在快感的刺激下扭动着身体，并导致快感传向另一边的同伴。")
+			var v = gain({ v_exp: getop("魔法师"), p_exp: getop("魔法师") })
+			show("然后你又一次感到魔法师那边在高潮。")
+			gain({ orgasm: v + 1 })
+			show("你的身体做出回应。")
+			gain({ v_exp: v + 1, p_exp: v + 1 })
+			show("当你们从陷阱中解放时，二人早已深陷在快感的回旋当中。")
+			gainop("魔法师")
+		},
+		town: false,
+		once: true,
+		chance: function () {
+			if ("魔法师的恋人" in buff && getop("魔法师") > 0) return 0.1
+		}
+	}
+	ev["assassin_trap"] = {
+		ev: function () {
+			show("你和刺客被困在了陷阱房间里。")
+			show("解除机关的条件是……做爱五次。")
+			show("你怎么看都觉得，这对于刺客来说是一个奖励关。")
+			gain({ v_exp: 6, a_exp: 6, o_exp: 3, s_exp: 5, les_exp: 5 }, "刺客")
+			gainop("刺客")
+		},
+		town: false,
+		once: true,
+		chance: function () {
+			if ("刺客的密友" in buff && getop("刺客") > 0) return 0.1
+		}
+	}
+	ev["fighter_trap"] = {
+		ev: function () {
+			show("你和武道家被困在了陷阱房间里。")
+			show("解除机关的条件是喝完一桶精液。")
+			if (status.s_lv <= 4) {
+				show("你喝了几口却难以下咽。")
+				show("操控陷阱的魅魔临时追加了一条规则：喝不下的部分必须嘴对嘴地喂给同伴。")
+				gain({ s_exp: 3, o_exp: 3, les_exp: 3 }, "武道家")
+			} else {
+				show("你们齐心协力，将精液消灭干净。")
+				gain({ s_exp: 10 })
+			}
+			gainop("武道家")
+		},
+		town: false,
+		once: true,
+		chance: function () {
+			if ("武道家的战友" in buff) return 0.1
+		}
+	}
 	ev["fighter_prison"]={
 		ev:function(){
 			show("武道家在接下清理哥布林据点的任务之后没有回来。")
@@ -339,23 +415,6 @@ function friendship(){
 			if ("魔法师的恋人" in buff && past_event.includes("assassin9")) return 0.2
 		}
 	}
-	ev["magic8"] = {
-		ev: function () {
-			show("当你和魔法师约会时，触手服突然乱动起来。")
-			gain({v_exp: 2, a_exp: 2},"触手服",true)
-			show("你只能和魔法师说自己身体不舒服。")
-			show("魔法师取消了接下来的安排，提前和你进了旅馆。")
-			if (rand(3) == 0) show("你注意到神秘少女在一旁偷笑。")
-			pause()
-			gain({ o_exp: 4, v_exp: 2, b_exp: 2, les_exp: 5 },"魔法师",true)
-			gainop("魔法师")
-		},
-		town: true,
-		once: true,
-		chance: function () {
-			if ("魔法师的恋人" in buff && "触手服" in buff && getop("神秘少女") >= 0) return 0.2
-		}
-	}
 	ev["magic_prison"]={
 		ev:function(){
 			show("魔法师被兽人抓走了。")
@@ -387,14 +446,14 @@ function friendship(){
 			} else {
 				show("你确信只有被魅魔催眠的人才干得出这种事。")
 				show("但是机会难得，不试一试岂不可惜？")
-				gain({ v_exp: 4, les_exp: 4 }, "魔法师")
+				gain({ v_exp: 4, les_exp: 4, p_exp:2}, "魔法师")
 				gainop("魔法师")
 			}
 		},
 		town: true,
 		once: true,
 		chance: function () {
-			if (getop("魔法师") > 1) return 0.5
+			if (getop("魔法师") > 1) return 0.3
 		},
 		start: 5
 	}
@@ -555,7 +614,7 @@ function friendship(){
 		ev:function(){
 			show("刺客半夜里潜入了你的房间，拜托你为她处理性欲。")
 			if(past_event.includes("succubus_assassin"))
-				gain({v_exp:4,a_exp:4,s_exp:2,les_exp:2},"刺客")
+				gain({v_exp:4,a_exp:4,s_exp:2,les_exp:3},"刺客")
 			else gain({a_exp:4,s_exp:1,les_exp:2},"刺客")
 			gainop("刺客")
 		},
@@ -602,6 +661,28 @@ function friendship(){
 		once: true,
 		chance: function () {
 			if (("刺客的密友" in buff) && getop("刺客") >= 0 && getop("魔法师") >= 0 && ("魔法师的恋人"in buff)) return 0.3
+		},
+		start: 5
+	}
+
+	ev["assassin_s"] = {
+		ev: function () {
+			show("一天深夜，刺客敲响了你的房门。")
+			if (check("wis", succubus_pow + getop("刺客")) >= 0) {
+				show("根据你的经验，刺客进你的房间向来都是直接翻窗户。")
+				show("正常敲门的刺客绝对是被催眠了。")
+				gainop("刺客")
+			} else {
+				show("你刚打开门，立刻就被刺客按倒在床上。")
+				gain({ v_exp: 4, a_exp: 4, s_exp: 2, les_exp: 4 }, "刺客")
+				gainop("刺客")
+				show("你感到她的动作比平时更温柔了一些——事后你才知道这是因为她被魅魔催眠了。")
+			}
+		},
+		town: true,
+		once: true,
+		chance: function () {
+			if (getop("刺客") > 1 && "刺客的密友" in buff) return 0.3
 		},
 		start: 5
 	}

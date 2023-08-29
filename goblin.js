@@ -57,12 +57,12 @@ function goblin(){
 			gain({ exp: goblin_e, money: goblin_m })
 			pause()
 			show("在你搜刮战利品时，藏在一旁的哥布林从背后抓住了你。")
-			if (check("str", goblin_pow + status.b_lv * 2) >= 0) {
+			var v = gain({ b_exp: 1 })
+			if (check("str", goblin_pow + v * 8) >= 0) {
 				show("你被揉了几下胸部之后摆脱了压制，随后你又多了一份战利品。")
-				gain({ exp: goblin_e, money: goblin_m, b_exp: 1 })
+				gain({ exp: goblin_e, money: goblin_m})
 			} else {
 				show("他抓住你的胸部使劲揉弄。你一时之间浑身酸软，无法反抗。")
-				gain({ b_exp: 3 })
 				if (rand(4) == 0) {
 					show("更多哥布林冒了出来。你被他们捆得严严实实。")
 					gainbuff("监禁：哥布林", 1)
@@ -88,7 +88,7 @@ function goblin(){
 			}else{
 				show("他们轮流袭击你身上的敏感部位，令你手忙脚乱。")
 				var tmp = gain({ "v_exp": 1, "b_exp": 1, "a_exp": 1 })
-				if (tmp == 0||check("dex", goblin_pow + tmp*4)>=0) {
+				if (tmp == 0) {
 					show("在击倒其中一个哥布林后，你突破了他们的包围。")
 					gain({ exp: goblin_e, money: goblin_m })
 				} else {
@@ -154,6 +154,8 @@ function goblin(){
 	ev["goblin_village"]={
 		ev:function(){
 			show("你闯进了哥布林村。",true)
+			slayer()
+
 			for(i=1;i<=4;i++){
 				var r=rand(4)
 				if (r == 1) {
@@ -175,12 +177,12 @@ function goblin(){
 					gain({ exp: goblin_e, money: goblin_m })
 					pause()
 					show("在你搜刮战利品时，藏在一旁的哥布林从背后抓住了你。")
-					if (check("str", goblin_pow + status.b_lv * 2) >= 0) {
+					var v = gain({ b_exp: 1 })
+					if (check("str", goblin_pow + v * 8) >= 0) {
 						show("你被揉了几下胸部之后摆脱了压制，随后你又多了一份战利品。")
-						gain({ exp: goblin_e, money: goblin_m, b_exp: 1 })
+						gain({ exp: goblin_e, money: goblin_m})
 					} else {
 						show("他抓住你的胸部使劲揉弄。你一时之间浑身酸软，无法反抗。")
-						gain({ b_exp: 3 })
 						show("更多哥布林冒了出来。你被他们捆得严严实实。")
 						gainbuff("监禁：哥布林", 1)
 						return
@@ -194,7 +196,7 @@ function goblin(){
 					} else {
 						show("他们轮流袭击你身上的敏感部位，令你手忙脚乱。")
 						var tmp = gain({ "v_exp": 1, "b_exp": 1, "a_exp": 1 })
-						if (tmp == 0 || check("dex", goblin_pow + tmp * 4) >= 0) {
+						if (tmp == 0) {
 							show("在击倒其中一个哥布林后，你突破了他们的包围。")
 							gain({ exp: goblin_e, money: goblin_m })
 						} else {
@@ -259,15 +261,22 @@ function goblin(){
 			}
 			show("你在哥布林村里大杀特杀，然后放火烧毁了这个地方。",true)
 			gain({"money":100})
+			if ("哥布林的脚镣" in flag) {
+				show("你找到了脚镣的钥匙。")
+				var v = buff["奴隶脚镣"]
+				removebuff("奴隶脚镣")
+				gain({ str: v, dex: v, wis: v })
+
+				delete (flag["哥布林的脚镣"])
+			}
 			nextchapter()
 			if(getbuff("兽化魔法")>=4)setachievement("平常心")
 			//gainbuff("讨伐证明：哥布林村")
 			if (past_event.includes("avenger_goblin")) {
 				pause()
 				show("完成复仇后，你感到有些空虚。")
-				gain({str:-2,dex:-2,wis:-2})
+				gain({ str: -3, dex: -3, wis: -3 })
 			}
-
 		},
 		town:false,
 		chance:function(){
@@ -275,6 +284,8 @@ function goblin(){
 				return 0
 			}
 			if(week-chapter_startweek<=7)return 0
+			if ("失衡" in buff) return 0.5
+
 			if(getop("武道家")<-100)return 2
 			return 1
 		},
@@ -299,7 +310,7 @@ function goblin(){
 				gain({ o_exp: 3, s_exp: 1 }, "哥布林")
 			}else{
 				show("你下意识地舔了几下他的肉棒，才想起了哥布林是你必须打倒的敌人。")
-				gain({exp:goblin_e,money:goblin_m,o_exp:1})
+				gain({exp:goblin_e,money:goblin_m,o_exp:1},"哥布林")
 			}
 		},
 		town:false,
@@ -312,7 +323,7 @@ function goblin(){
 	}
 	ev["goblin_aftermath2"] = {
 		ev: function () {
-			show("会长公布了一个坏消息：")
+			show("会长宣布了一个坏消息：")
 			show("一些哥布林正在形成新的聚落。")
 			show("虽然说少量的哥布林构不成威胁，但如果他们重新繁衍起来的话，又会成为一个大麻烦。")
 		},
@@ -340,6 +351,18 @@ function goblin(){
 					show("“我不会再次让你毁掉我中意的肉棒。”说着，暗精灵用精灵语念起了一段咒语。")
 					show("一轮圆月凭空出现在空中，在月光的治愈力量下，一切都显得祥和安宁。")
 					show("而你的雌兽本能被空前地强化。")
+					if ("露出女神的加护" in buff) {
+						show("突然，暗精灵停下了施法。")
+						show("“你也是女神的信徒吗？”")
+						show("你困惑了一阵之后意识到她说的女神是哪位。")
+						show("暗精灵认为像你这样仅仅只是在日常生活当中穿插一些露出的人等级太低，而你认为暗精灵以被侵犯为前提的露出已经脱离了露出的本质。")
+						show("在一番激烈的争论后，你得到了暗精灵的认可。")
+						gainbuff("月之祝福")
+						gain({str:1, dex:1, wis: 1})
+						setachievement("月之祝福")
+						show("沐浴在月光下会强化你的能力")
+						return
+					}
 					if (status.les_lv >= rand(4)) {
 						show("你手足并用地扑向暗精灵，舔起她丰满的胸部，随后又将她压在身下，让哥布林同时侵犯你们两人。")
 						show("月光的效果被打断了。")
@@ -348,6 +371,7 @@ function goblin(){
 						show("当你的意识恢复正常时，暗精灵表示她认可了你的实力。")
 						show("另外，为了避免你和她争抢哥布林肉棒，她希望你尽快离开。")
 						gainbuff("月之祝福")
+						gain({ str: 1, dex: 1, wis: 1 })
 						setachievement("月之祝福")
 						show("沐浴在月光下会强化你的能力")
 						return
@@ -423,24 +447,25 @@ function goblin(){
 					var rr = rand(4)
 					if (rr >= 2 && getbuff("监禁：哥布林") >= 3) rr = 0
 					if (rr == 1 && getbuff("兽化魔法") >= 4) rr = 0
-					if (rr == 0) {
+					if (rr==0 && monk_empty()) {
+						show("由于空灵体的效果，你勉强保持了内心的清明。")
+						show("你度过了难眠的一夜。")
+						gainbuff("监禁：哥布林", 1)
+					}else if (rr == 0) {
 						pause()
 						show("你挣脱了锁链。")
 						show("你惊讶于自己的力量，但残存的理智不足以让你进行复杂的思考。", true)
 						show("你手足并用地扑向一个哥布林，舔起他的肉棒，随后又抬起屁股迎接另一个哥布林的到来。")
 						show("更多哥布林聚集过来，用交尾庆祝雌兽的诞生。")
-						pause()
 						show("结局：哥布林村的雌兽")
 						endofgame("哥布林村的雌兽")
 						return
 					} else if (rr == 1) {
-						pause()
 						show("你挣脱了锁链。")
 						show("你惊讶于自己的力量，但残存的理智不足以让你进行复杂的思考。", true)
 						show("你手足并用地逃出了哥布林村。")
 						gainbuff("监禁：哥布林", -10000)
 					} else {
-						pause()
 						show("你度过了难眠的一夜。")
 						gainbuff("监禁：哥布林", 1)
 					}
@@ -521,8 +546,8 @@ function goblin(){
 				gain({ v_exp: 3, s_exp: 1 }, "哥布林")
 				gainbuff("监禁：哥布林", 1)
 			}else{
+				show("负责看守的哥布林在操了你一顿之后睡着了，你注意到钥匙从他的怀中掉了出来。")
 				gain({ v_exp: 3, s_exp: 1 }, "哥布林")
-				show("负责看守的哥布林在操了你一顿之后睡着了，你注意到钥匙从他的怀中掉了出来。",true)
 				show("你设法用足尖勾到了钥匙，然后解开了锁链。")
 				if(op["武道家"]!=null&&op["武道家"].val<0){
 					show("你为武道家打开了锁。")
@@ -550,12 +575,20 @@ function goblin(){
 					} else{
 				
 						show("在逃跑途中你被哥布林发现了。")
-						if(getbuff("兽化魔法")<=2){
-							show("作为惩罚，你接受了大量的凌辱。")
-							randomattack(25, 1, "哥布林", false, 5)
-						}else{
-							show("你当机立断地迎上去舔舐哥布林的肉棒。哥布林以为只是一条母狗没拴好，没有意识到你试图逃跑。")
-							gain({o_exp:5,s_exp:2},"哥布林")
+						if ("奴隶脚镣" in buff) {
+							show("作为对逃跑的惩罚，哥布林增加了脚镣上的配重。")
+							gainbuff("奴隶脚镣", 1)
+							gain({ str: -1, dex: -1, wis: -1 })
+						} else {
+							show("作为对逃跑的惩罚，哥布林给你戴上了脚镣。")
+							gainbuff("奴隶脚镣", 1)
+							gain({ str: -1, dex: -1, wis: -1 })
+							show("奴隶脚镣会随着时间推移而变沉重。")
+							gainflag("哥布林的脚镣")
+							if (status.name == "术士") {
+								show("由于禁忌之书的效果，你在获得诅咒道具时额外获得了经验值")
+								gain({ exp: 50 })
+							}
 						}
 						gainbuff("监禁：哥布林",1)
 					}

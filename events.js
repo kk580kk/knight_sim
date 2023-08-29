@@ -17,7 +17,8 @@ function event_init(){
 	sidequest()
 	dream()
 	hypno()
-
+	nopant()
+	altar()
 	for (i in ev) {
 		if (ev[i].start == null) ev[i].start = 0
 		if (ev[i].end == null) ev[i].end = 10000000
@@ -65,7 +66,7 @@ function randomattack(n,ii,enemy,non,m) {
 			res["s_exp"] += ii
 		}
 		if (tt == 5) {
-			if (res["p_exp"] == null) res["s_exp"] = 0
+			if (res["p_exp"] == null) res["p_exp"] = 0
 			res["p_exp"] += ii
 		}
 	}
@@ -76,16 +77,19 @@ function nextchapter() {
 	chapter++
 	chapter_startweek = week
 	pause()
-	goblin_pow = month/2 + 12
-	slime_pow = month/2 + 15
-	orc_pow = month/2 + 18
-	tentacle_pow = month/2 + 21
-	succubus_pow = month/2 + 24
+	goblin_pow = month/2 + 14
+	slime_pow = month/2 + 18
+	orc_pow = month/2 + 22
+	tentacle_pow = month/2 + 26
+	succubus_pow = month/2 + 30
 
 	show("你的冒险者等级提升了。")
-	if ("常识改变：勇者之证" in buff) {
-		show("你作为露出方面的勇者的等级也得到了提升。")
-		gain({ e_lv: 2, lewd: 2 })
-		bonus_status.e_lv += 2
+
+	if ("奴隶脚镣" in buff) {
+		show("击败首领让你感到一阵轻松。")
+		var v = buff["奴隶脚镣"]
+		gain({ str: v, dex: v, wis: v })
+		buff["奴隶脚镣"] = 0
 	}
+	if("强制排卵" in buff)removebuff("强制排卵")
 }

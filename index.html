@@ -1,69 +1,77 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta name="viewport" content="width=device-width, initial-scale=1" char-set="utf-8">
-<style>
-* {
-  box-sizing: border-box;
-}
+<html><head>
+	<meta name="viewport" content="width=device-width, initial-scale=1" char-set="utf-8">
+	<style>
+		* {
+			box-sizing: border-box;
+		}
 
-.column {
-  float: left;
-  padding: 10px;
-  overflow-x: hidden;
-  overflow-y:auto;
-  height:80vh;
-  charset="utf-8"
-}
+		.column {
+			float: left;
+			padding: 10px;
+			overflow-x: hidden;
+			overflow-y: auto;
+			height: 80vh;
+		}
 
-.left {
-  width: 25%;
-}
+		.left {
+			width: 20%;
+		}
 
-.right {
-  width: 75%;
-}
+		.center {
+			width: 20%;
+		}
 
-.row:after {
-  content: "";
-  display: table;
-  clear: both;
-}
-</style>
+		.right {
+			width: 60%;
+		}
 
-<script type="text/javascript" src="main.js"  charset="utf-8"></script>
-<script type="text/javascript" src="events.js"  charset="utf-8"></script>
-<script type="text/javascript" src="goblin.js"  charset="utf-8"></script>
-<script type="text/javascript" src="guild.js"  charset="utf-8"></script>
-<script type="text/javascript" src="town.js"  charset="utf-8"></script>
-<script type="text/javascript" src="bar.js"  charset="utf-8"></script>
-<script type="text/javascript" src="slime.js"  charset="utf-8"></script>
-<script type="text/javascript" src="orc.js"  charset="utf-8"></script>
-<script type="text/javascript" src="tentacle.js"  charset="utf-8"></script>
-<script type="text/javascript" src="finalboss.js"  charset="utf-8"></script>
-<script type="text/javascript" src="friendship.js"  charset="utf-8"></script>
-<script type="text/javascript" src="treasure.js"  charset="utf-8"></script>
-<script type="text/javascript" src="loan.js"  charset="utf-8"></script>
-<script type="text/javascript" src="prostitute.js"  charset="utf-8"></script>
-<script type="text/javascript" src="status_ev.js"  charset="utf-8"></script>
-<script type="text/javascript" src="btn.js"  charset="utf-8"></script>
+		.row:after {
+			content: "";
+			display: table;
+			clear: both;
+		}
+	</style>
 
-</head>
+	<script type="text/javascript" src="main.js" charset="utf-8"></script>
+	<script type="text/javascript" src="class_ev.js" charset="utf-8"></script>
+	<script type="text/javascript" src="events.js" charset="utf-8"></script>
+	<script type="text/javascript" src="goblin.js" charset="utf-8"></script>
+	<script type="text/javascript" src="guild.js" charset="utf-8"></script>
+	<script type="text/javascript" src="town.js" charset="utf-8"></script>
+	<script type="text/javascript" src="bar.js" charset="utf-8"></script>
+	<script type="text/javascript" src="slime.js" charset="utf-8"></script>
+	<script type="text/javascript" src="orc.js" charset="utf-8"></script>
+	<script type="text/javascript" src="tentacle.js" charset="utf-8"></script>
+	<script type="text/javascript" src="finalboss.js" charset="utf-8"></script>
+	<script type="text/javascript" src="friendship.js" charset="utf-8"></script>
+	<script type="text/javascript" src="treasure.js" charset="utf-8"></script>
+	<script type="text/javascript" src="loan.js" charset="utf-8"></script>
+	<script type="text/javascript" src="prostitute.js" charset="utf-8"></script>
+	<script type="text/javascript" src="status_ev.js" charset="utf-8"></script>
+	<script type="text/javascript" src="btn.js" charset="utf-8"></script>
+	<script type="text/javascript" src="sidequest.js" charset="utf-8"></script>
+	<script type="text/javascript" src="dream.js" charset="utf-8"></script>
+	<script type="text/javascript" src="hypno.js" charset="utf-8"></script>
+	<script type="text/javascript" src="nopant.js" charset="utf-8"></script>
+	<script type="text/javascript" src="altar.js" charset="utf-8"></script>
+
+<title>女骑士模拟器</title></head>
 
 <body onload="load()">
 
-<h2>女骑士模拟器 </h2>
-<p><button onclick="newgame()">开始</button><button onclick="pause_btn()">暂停</button><button onclick="step_btn()">单步</button><button onclick="auto_btn()">自动</button><button onclick="fast_btn()">快速</button></p>
-<p id="attribute">本游戏纯属虚构，如有雷同，纯属巧合。登场人物均满十八岁。</p>
+<p id="header"><h2>女骑士模拟器 V1.0</h2><p><button onclick="newgame()">开始</button><button onclick="pause_btn()">暂停</button><button onclick="step_btn()">单步</button><button onclick="auto_btn()">慢速</button><button onclick="fast_btn()">中速</button><button onclick="vfast_btn()">快速</button><button onclick="gamelog()">统计</button><button onclick="load()">关于</button><button onclick="reload()">恢复</button></p><p id="attribute">本游戏包括色情内容，未满十八岁禁止游玩。<br>游戏内容纯属虚构，如有雷同，纯属巧合。<br>登场人物均满十八岁。<br>故事发生在架空世界，没有任何实际意义，也不能代表我的个人观点。<br>请不要在公开场合（包括但不限于一般向的论坛，社交媒体，讨论群组等）谈论此游戏，谢谢配合。<br>如果发生不受控传播的情况，这个项目非常可能会消失。<br>本游戏首发于itch.io平台，没有许可过任何转载。<br>-裴多菲</p></p>
 
 <div class="row">
-  <div class="column left">
-	<p id="status"></p>
-  </div>
-  <div class="column right" id="bottom-right">
-	<p id="gamelog"></p>
-  </div>
+	<div class="column left">
+		<p id="status"></p>
+	</div>
+	<div class="column center">
+		<p id="buff"></p>
+	</div>
+	<div class="column right" id="bottom-right">
+		<p id="gamelog"></p>
+	</div>
 </div>
 
-</body>
-</html>
+
+</body></html>

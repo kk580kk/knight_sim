@@ -3,7 +3,7 @@ function bar(){
 		ev:function(){
 			show("在收了一笔可观的小费后，酒馆老板小声说道：")
 			show("公会会长和教官曾经是恋人。",true)
-			show("由于会长多次在冒险中被魔物强奸，她的身体无法再被教官满足。两个人就此分手。")
+			show("由于会长多次在讨伐魔王的冒险中被魔物强奸，她的身体无法再被教官满足。两个人就此分手。")
 			show("据说，教官在那之后苦练床技，立誓要让每个他教过的女冒险者用身体记住人类男性的好处。")
 			show("你从未听说过如此离奇……不对，是离谱的爱情故事。")
 			setlocalkey("barp1")
@@ -44,6 +44,20 @@ function bar(){
 			if (past_event.includes("demon")) return 0.02
 		}
 	}
+	ev["bar_demon2"] = {
+		ev: function () {
+			show("在收了一笔可观的小费后，酒馆老板小声说道：")
+			show("一些邪教徒崇拜制造混乱的恶魔。")
+			show("他们立志像那位上古的魔神一样，让世界陷入非善非恶的混沌。")
+			setlocalkey("bar_demon2")
+			checkbarachievement()
+		},
+		town: true,
+		once: true,
+		chance: function () {
+			if (past_event.includes("hypno_boss")) return 0.02
+		}
+	}
 	ev["bar_alchemist"] = {
 		ev: function () {
 			show("在收了一笔可观的小费后，酒馆老板小声说道：")
@@ -59,10 +73,40 @@ function bar(){
 		}
 	}
 
+	ev["bar_hypno"] = {
+		ev: function () {
+			show("在收了一笔可观的小费后，酒馆老板小声说道：")
+			show("每购买一杯特调饮料，就有一个无辜的兽人遭到榨取。")
+			show("没有买卖，就没有伤害。")
+			setlocalkey("barhypno")
+			checkbarachievement()
+		},
+		town: true,
+		once: true,
+		chance: function () {
+			if ("常识改变：隐藏菜单" in buff) return 0.1
+		}
+	}
+
+	ev["bar_saint"] = {
+		ev: function () {
+			show("在收了一笔可观的小费后，酒馆老板小声说道：")
+			show("国王的人说圣女的恶堕导致了公主骑士的恶堕。")
+			show("教会的人说公主骑士的恶堕导致了圣女的恶堕。")
+			show("两边就这么在大军压境的情况下争执不休——最后还是靠冒险者解决了烂摊子。")
+			setlocalkey("barsaint")
+			checkbarachievement()
+		},
+		town: true,
+		once: true,
+		chance: function () {
+			if (getop("罪人") >= 0) return 0.02
+		}
+	}
 	ev["bar_princess"] = {
 		ev: function () {
 			show("在收了一笔可观的小费后，酒馆老板小声说道：")
-			show("失踪的公主骑士曾经受到过严重的洗脑。",true)
+			show("公主骑士曾经受到过严重的洗脑。")
 			show("过了一会儿，他补充道：举个例子，她以为骑士决斗比的是性技。")
 			setlocalkey("barp4")
 			checkbarachievement()
@@ -93,10 +137,10 @@ function bar(){
 			show("在昔日的战争当中，哥布林法师会用兽化魔法强化己方的战士。")
 			show("如今，战斗的形式发生了变化。")
 			show("哥布林也为兽化魔法找到了新的用途。")
-			checkbarachievement()
 			show("情报提升了你对抗哥布林的成功率。")
 			goblin_pow-=2
 			setlocalkey("barc1")
+			checkbarachievement()
 		},
 		town:true,
 		once:true,
@@ -110,10 +154,10 @@ function bar(){
 		ev:function(){
 			show("在收了一笔可观的小费后，酒馆老板小声说道：")
 			show("人类生下的史莱姆可能会继承母体的外表和技能。")
-			checkbarachievement()
 			show("情报提升了你对抗史莱姆的成功率。")
 			slime_pow -= 2
 			setlocalkey("barc2")
+			checkbarachievement()
 		},
 		town:true,
 		once:true,
@@ -128,10 +172,10 @@ function bar(){
 			show("在收了一笔可观的小费后，酒馆老板小声说道：")
 			show("兽人是一个荣誉的种族。")
 			show("但他们将公开强奸视为一种荣誉。")
-			checkbarachievement()
 			show("情报提升了你对抗兽人的成功率。")
 			orc_pow -= 2
 			setlocalkey("barc3")
+			checkbarachievement()
 		},
 		town:true,
 		once:true,
@@ -146,10 +190,10 @@ function bar(){
 			show("在收了一笔可观的小费后，酒馆老板小声说道：")
 			show("一些幼体触手在胎内时就会对母体释放魔力，让她对触手产生母性本能。")
 			show("每年都有产下触手的女冒险者造成或大或小的事故。")
-			checkbarachievement()
 			show("情报提升了你对抗触手的成功率。")
 			tentacle_pow -= 2
 			setlocalkey("barc4")
+			checkbarachievement()
 		},
 		town:true,
 		once:true,
@@ -164,10 +208,10 @@ function bar(){
 			show("在收了一笔可观的小费后，酒馆老板小声说道：")
 			show("众所周知，四大天王对应着四种攻击属性。")
 			show("见你没有听明白，他补充道：我不是指力量，智力，敏捷和全才。")
-			checkbarachievement()
-			show("情报提升了你对抗魅魔的成功率。")
+			show("情报提升了你对抗魔王军的成功率。")
 			succubus_pow -= 2
 			setlocalkey("barc5")
+			checkbarachievement()
 		},
 		town:true,
 		once:true,
@@ -180,7 +224,7 @@ function bar(){
 	ev["bar_player"] = {
 		ev: function () {
 			show("在收了一笔可观的小费后，酒馆老板小声说道：")
-			show("随着月夜雌兽的出现，本地的七大不可思议已经多达十九个了。")
+			show("随着月夜雌兽的出现，本地的七大不可思议已经多达十九个了。","stable")
 			setlocalkey("barplayer")
 			checkbarachievement()
 		},
@@ -190,6 +234,7 @@ function bar(){
 			if ("月夜雌兽" in buff) return 0.02
 		},
 	}
+
 	ev["bar_h1"] = {
 		ev: function () {
 			show("“说起来你们可能不信，战士的修行方法是……”")
@@ -234,7 +279,7 @@ function bar(){
 	}
 	ev["bar_h4"] = {
 		ev: function () {
-			show("“有时候我真的想知道，骑士小姐做的事情和骑士有任何关系吗？”")
+			show("“不知道骑士小姐在卖春的时候还能不能想起，自己的初衷是恢复家族荣誉。”")
 			show("酒馆老板见你走进酒馆，连忙闭上了嘴。")
 			setlocalkey("barh4")
 			checkbarachievement2()
@@ -242,7 +287,7 @@ function bar(){
 		once: true,
 		town: true,
 		chance: function () {
-			if (status.name == "骑士" && "契约：娼妇" in buff) return 0.1
+			if (status.name == "骑士" && getflag("娼妇") >= 3) return 0.1
 		}
 	}
 	ev["bar_h5"] = {
@@ -260,7 +305,8 @@ function bar(){
 	}
 	ev["bar_h6"] = {
 		ev: function () {
-			show("“复仇者的自慰对象竟然是……”")
+			show("“我时常听到人们抱怨现在的冒险者日益淫乱，经常没过几个月就在娼馆出道。”")
+			show("“而舞女改变了人们的这个观点——不需要卖春的冒险者更淫乱。”")
 			show("酒馆老板见你走进酒馆，连忙闭上了嘴。")
 			setlocalkey("barh6")
 			checkbarachievement2()
@@ -268,7 +314,7 @@ function bar(){
 		once: true,
 		town: true,
 		chance: function () {
-			if (status.name == "复仇者" && getflag("复仇者的屈辱")>=2) return 0.1
+			if (status.name == "舞女" && "进阶职业：脱衣舞女" in buff) return 0.1
 		}
 	}
 	ev["bar_h7"] = {
@@ -296,16 +342,16 @@ function bar(){
 		once: true,
 		town: true,
 		chance: function () {
-			if (status.name == "被诅咒的骑士" && "遗忘诅咒" in buff) return 0.02
+			if (status.name == "被诅咒的骑士" && "遗忘诅咒" in buff) return 0.1
 		}
 	}
 	ev["bar_h9"] = {
 		ev: function () {
-			show("“娼妇契约是一条古老的魔法，千百年来用于保证交易的公平。”")
+			show("“娼妇契约是一条古老的魔法，据说是沦为娼妇的大魔女所创。”")
 			show("“放逐者竟然能找到其中的漏洞，真是天赋异禀。”")
 			show("酒馆老板见你走进酒馆，连忙闭上了嘴。")
 			show("过了一会儿，他小声补充道：“我很想知道她是怎么对魔物收钱的。”")
-			setlocalkey("barh7")
+			setlocalkey("barh9")
 			checkbarachievement2()
 		},
 		once: true,
@@ -314,33 +360,48 @@ function bar(){
 			if (status.name == "放逐者" && "魔族娼妇的秘法" in buff) return 0.1
 		}
 	}
-
-	ev["bar_hypno"] = {
+	ev["bar_h10"] = {
 		ev: function () {
-			show("在收了一笔可观的小费后，酒馆老板小声说道：")
-			show("你每购买一杯特调饮料，就有一个无辜的兽人遭到榨取。")
-			show("没有买卖，就没有伤害。")
-			setlocalkey("barhypno")
-			checkbarachievement()
+			show("“我实在想不到有什么关于野蛮人的秘闻。”")
+			show("酒馆老板见你走进酒馆，毫不在意地继续说着：")
+			show("“毕竟她藏不住任何秘密。”")
+			setlocalkey("barh10")
+			checkbarachievement2()
 		},
-		town: true,
 		once: true,
+		town: true,
 		chance: function () {
-			if ("常识改变：隐藏菜单" in buff) return 0.1
+			if (status.name == "野蛮人") return 0.1
 		}
 	}
-
-	ev["bar_saint"] = {
+	ev["bar_h11"] = {
 		ev: function () {
-			show("在收了一笔可观的小费后，酒馆老板小声说道：")
-			show("不必费心探究圣水的来源，心存感激就行。")
-			setlocalkey("barsaint")
-			checkbarachievement()
+			show("“在武僧的影响下，本地的流氓变得前所未有地乐于助人。”")
+			show("“我是指……帮她处理异常真气。”")
+			show("酒馆老板见你走进酒馆，连忙闭上了嘴。")
+			setlocalkey("barh11")
+			checkbarachievement2()
 		},
-		town: true,
 		once: true,
+		town: true,
 		chance: function () {
-			if ("圣水的恩惠" in buff) return 0.2
+			if (status.name == "武僧" && "魅魔的香水" in buff) return 0.1
+		}
+	}
+	ev["bar_h12"] = {
+		ev: function () {
+			show("“灵魂越多，欲望越多。”")
+			show("“欲望越多，高潮越强。”")
+			show("“高潮越强，灵魂越少。”")
+			show("“所以说，灵魂越多，灵魂越少。”")
+			show("酒馆老板见你走进酒馆，连忙闭上了嘴。")
+			setlocalkey("barh12")
+			checkbarachievement2()
+		},
+		once: true,
+		town: true,
+		chance: function () {
+			if (status.name == "魔剑士" && getbuff("灵魂收割") > 10) return 0.1
 		}
 	}
 }
@@ -349,7 +410,7 @@ function checkbarachievement() {
 	if (getlocalkey("baralch") != null && getlocalkey("barplayer") != null && getlocalkey("barp1") != null && getlocalkey("barp2") != null && getlocalkey("barp3") != null && getlocalkey("barp4") != null)
 		if (getlocalkey("barc1") != null && getlocalkey("barc2") != null && getlocalkey("barc3") != null && getlocalkey("barc4") != null && getlocalkey("barc5") != null && getlocalkey("barhypno") != null && getlocalkey("barsaint") != null && getlocalkey("barelf") != null)
 			setachievement("说好的小费呢")
-	if ("常识改变：分享秘密" in buff) {
+/*	if ("常识改变：分享秘密" in buff) {
 		show("作为交换，你分享了自己的秘密")
 		var r = rand(3)
 		if (r == 0) {
@@ -359,9 +420,9 @@ function checkbarachievement() {
 		} else if (r == 2) {
 			show("你向酒馆老板谈起自己的敏感部位。")
 		}
-		gainbuff("情报公开", 1)
+		gainbuff("情报公开", 2)
 		show("泄露的情报降低了你对抗流氓的成功率")
-	}
+	}*/
 }
 function checkbarachievement2() {
 }

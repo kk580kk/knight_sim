@@ -5,7 +5,7 @@ function dream() {
 			show("满月之夜，你做了一场被哥布林法师催眠的春梦。")
 			show("醒来时你发现自己身上有着爬行的痕迹。")
 			pause()
-			show("第二天，月夜雌兽的怪谈开始在城镇里流传。")
+			show("第二天，月夜雌兽的怪谈开始在城镇里流传。","stable")
 			gain({ e_exp: 5 })
 			gainbuff("月夜雌兽")
 			show("每当满月时，你强烈地想要露出")
@@ -24,6 +24,7 @@ function dream() {
 	ev["dream_orc"] = {
 		ev: function () {
 			show("你做了一场被兽人侵犯的春梦。")
+			show("醒来时，你意识到自己已经忘不了败北凌辱的快感。")
 			gainbuff("败北愿望")
 			show("在发情状态下，事件的成功率降低")
 		},
@@ -41,6 +42,7 @@ function dream() {
 	ev["dream_slime"] = {
 		ev: function () {
 			show("你做了一场被史莱姆淹没的春梦。")
+			show("醒来时，你感到有些空虚。")
 			gainbuff("欲求不满")
 			show("在没有得到满足时，发情增量加倍")
 		},
@@ -49,15 +51,16 @@ function dream() {
 		start: 3,
 		end: 3,
 		chance: function () {
-			var a = 0.2
-			if ("堕落之种" in buff) a = 1
-			if (getbuff("史莱姆的母亲") >= 2) return a
+			var a = 0.1
+			if ("堕落之种" in buff) a = 0.5
+			if (getbuff("史莱姆的母亲") >= 1) return a * getbuff("史莱姆的母亲")
 		}
 	}
 
 	ev["dream_tentacle"] = {
 		ev: function () {
 			show("你做了一场被触手凌辱的春梦。")
+			show("醒来时，你的身体散发出淡淡的气味。")
 			gainbuff("诱触手体质")
 			show("开启宝箱时有更大概率遇到陷阱")
 		},
@@ -68,13 +71,14 @@ function dream() {
 		chance: function () {
 			var a = 0.2
 			if ("堕落之种" in buff) a = 1
-			if (getbuff("触手的饲主") >= 4) return a
+			if (getbuff("触手的饲主") >= 3) return a
 		}
 	}
 
 	ev["dream_seed"] = {
 		ev: function () {
 			show("你做了一场被" + status.v_virgin + "夺走处女的春梦。")
+			show("醒来时，你的下身早已湿透。")
 			gain({ lust: 5 })
 		},
 		town: true,
@@ -89,6 +93,7 @@ function dream() {
 	ev["dream_seed2"] = {
 		ev: function () {
 			show("你做了一场被" + status.a_virgin + "夺走后庭处女的春梦。")
+			show("醒来时，你的下身早已湿透。")
 			gain({ lust: 5 })
 		},
 		town: true,
@@ -211,7 +216,7 @@ function dreamlandev() {
 			gainbuff("梦境乐园的奖券", 1)
 			if (rand(3) == 0) {
 				show("由于出产的影响，你分泌出了乳汁。")
-				gain({ b_exp: 5 })
+				gain({ b_exp: 5},null,"extra")
 				if (!("母乳体质" in buff)) gainbuff("母乳体质")
 			}
 		}
@@ -221,10 +226,15 @@ function dreamlandev() {
 		show("你对着镜子里自己的裸体自慰。")
 		gain({ a_exp: status.m_lv + 3, v_exp: status.m_lv + 3, m_exp: status.m_lv + 3 }, "自慰", true)
 		show("")
-		show("事后，你发现镜子迷宫的背面也有一个入口，招牌上写着“变态露出少女的自慰秀”。")
-		gain({ e_exp: 5 })
-		show("作为补偿，工作人员给你发了一张奖券。")
-		gainbuff("梦境乐园的奖券", 1)
+		if (status.name == "野蛮人") {
+			show("事后，你发现镜子迷宫的背面也有一个入口。")
+			show("工作人员和你说那是员工通道。")
+		} else {
+			show("事后，你发现镜子迷宫的背面也有一个入口，招牌上写着“变态露出少女的自慰秀”。")
+			gain({ e_exp: 5 })
+			show("作为补偿，工作人员给你发了一张奖券。")
+			gainbuff("梦境乐园的奖券", 1)
+		}
 	}
 
 	if (getbuff("梦境乐园的奖券") >= 3) {
@@ -232,7 +242,7 @@ function dreamlandev() {
 		show("收集三张奖券换后，你兑换了梦境乐园的奖品。")
 		gainbuff("梦境乐园的奖券", -3)
 		var r = rand(3) + 23
-		gain_treasure(maxtreasure, r, "dream")
+		lewdequipment(null,true)
 		show("“奖品虽然不多，但过程中的快乐才是最重要的。”魅魔对你说道。")
 		setachievement("过程比结果更重要")
 

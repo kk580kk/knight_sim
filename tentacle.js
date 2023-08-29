@@ -7,8 +7,8 @@ function tentacle(){
 		ev:function(){
 			var ans=check("str",tentacle_pow + 2)
 			if (ans >= 0) {
-				show("你斩杀了一只触手怪物。")
-
+				show("你斩杀了一只触手怪。")
+				gain({ money: tentacle_m, exp: tentacle_e })
 			} else {
 				show("你在战斗中被触手绑住了身体。")
 				if (gain({ v_exp: 1, a_exp: 1, b_exp: 1, p_exp: 1 }) <= 1) {
@@ -18,7 +18,7 @@ function tentacle(){
 					pause()
 					show("你被触手侵犯了。")
 					gain({ v_exp: 3, a_exp: 3, o_exp: 3, p_exp: 3, s_exp: 3 }, "触手")
-					if (rand(3) == 1) {
+					if (rand(3) == 1 || "强制排卵" in buff) {
 						gainbuff("怀孕：触手", 1)
 					}
 				}
@@ -39,16 +39,12 @@ function tentacle(){
 				show("你躲开了触手的偷袭。")
 				gain({money:tentacle_m,exp:tentacle_e})
 			}else if(check("str",tentacle_pow)>=0){
-				show("你激烈地反抗着。触手卷走了你身上的衣服后逃走了。")
+				show("你激烈地反抗着。触手在卷走了你身上的衣服后逃走了。")
 				gain({e_exp:2})
 			}else{
-				show("触手将你吊了起来。")
-				show("在被触手玩弄了身体后，你失去了反抗的力量。")
-				gain({v_exp:1,a_exp:1,b_exp:1,p_exp:1})
-				pause()
-				show("你被触手侵犯了。")
+				show("你被触手吊在空中，然后侵犯了全身各处。")
 				gain({v_exp:3,a_exp:3,o_exp:3,p_exp:3,s_exp:3},"触手")
-				if(rand(3)==1){
+				if (rand(3) == 1 || "强制排卵" in buff){
 					gainbuff("怀孕：触手",1)
 				}
 			}
@@ -64,22 +60,24 @@ function tentacle(){
 		ev:function(){
 			var ans=check("dex",tentacle_pow)
 			show("触手突然张开了长满细小牙齿的嘴，咬向你的乳头。")
-			if(ans>=0){
+			if (ans >= 0) {
 				show("你及时躲开了。")
-				gain({money:tentacle_m,exp:tentacle_e})
-			}else if("母乳体质" in buff){
+				gain({ money: tentacle_m, exp: tentacle_e })
+			} else if ("母乳体质" in buff) {
 				show("触手贪婪地吸食着你分泌的乳汁。")
-				gain({b_exp:5,p_exp:2})
-			}else{
-				if(rand(3)==0){
-					show("触手对你的胸部注入了一些液体。")
-					show("随后，你分泌出了乳汁。")
-					gain({b_exp:5,p_exp:2})
+				gain({ b_exp: 5, p_exp: 2 }, "触手", "extra")
+			} else {
+				if (rand(3) == 0) {
+					show("触手对你的胸部注入了一些奇怪的液体。")
+					show("不可言说的痛感在胸部蔓延。")
+					show("随着触手的挤压，母乳喷涌而出。")
+					gain({ b_exp: 5, p_exp: 2 }, "触手")
 					gainbuff("母乳体质")
-				}else{
+				} else {
 					show("触手对你的胸部注入了一些液体。")
-					show("随后，你的乳头挺立起来。")
-					gain({b_exp:5,p_exp:2})
+					show("不可言说的痛感在胸部蔓延。")
+					show("你的乳头不受控地挺立。")
+					gain({ b_exp: 3, p_exp: 2 }, "触手")
 				}
 			}
 		},
@@ -99,13 +97,24 @@ function tentacle(){
 				gain({money:tentacle_m,exp:tentacle_e})
 			}else if(ans>=0){
 				show("你的目光和它略微接触，下体立刻就产生了一股热流。你连忙移开了视线。")
-				gain({lust: 5})
 			}else{
 				show("你的目光和它略微接触，下体立刻就产生了一股热流。")
-				show("你向触手张开小穴，请求触手的侵犯。")
-				gain({v_exp:5,s_exp:2},"触手")
-				if(rand(3)==1){
-					gainbuff("怀孕：触手",1)
+				if ("破雾者" in buff) {
+					gain({ lust: 5 })
+					show("由于破雾者的效果，你免疫了进一步的精神操控。")
+				} else {
+					if (rand(4) == 0 && !("强制排卵" in buff)) {
+						show("奇怪的是，触手轻易地放过了你。你感到一阵放松，又感觉事情没这么简单。")
+						gain({ lust: 5 })
+						gainbuff("强制排卵")
+						show("下一次被触手侵犯时必定受孕")
+						return
+					}
+					show("你向触手张开双腿，请求触手的侵犯。")
+					gain({ v_exp: 5, s_exp: 2 }, "触手")
+					if (rand(3) == 1 || "强制排卵" in buff) {
+						gainbuff("怀孕：触手", 1)
+					}
 				}
 			}
 		},
@@ -117,47 +126,6 @@ function tentacle(){
 		end:4
 	}
 
-	ev["tentacle5"] = {
-		ev: function () {
-			show("触手从脚下的地面钻了出来。")
-			if (no_pant()) {
-				show("不巧的是，今天的你正好在尝试不穿内裤主义。")
-				gain({ v_exp: 5, s_exp: 2 }, "触手")
-				if (rand(3) == 1) {
-					gainbuff("怀孕：触手", 1)
-				}
-			} else {
-				show("你连忙躲闪，却还是被它撕坏了内裤")
-				gain({ v_exp: 1, e_exp: 1 }, "触手",true)
-			}
-		},
-		town: false,
-		chance: function () {
-			return 0.2
-		},
-		start: 4,
-		end: 4
-	}
-
-	ev["tentacle_semenbath"] = {
-		ev: function () {
-			show("你在触手洞窟里面发现了满满一池的……精液。")
-			if (check("dex", tentacle_pow + status.s_lv) >= 0) {
-				show("你小心翼翼地绕道而行。")
-			} else {
-				show("浓烈的气味令你头晕目眩。")
-				show("你不慎摔了下去。")
-				gain({ s_exp: 10 }, "触手")
-			}
-		},
-		town: false,
-		once: true,
-		chance: function () {
-			return 0.2
-		},
-		start: 4,
-		end: 4
-	}
 	ev["tentacle_ob"] = {
 		ev: function () {
 			show("你遇到了一只巨大的魔眼触手。")
@@ -178,19 +146,20 @@ function tentacle(){
 		end: 4
 	}
 	ev["tentacle_birth"]={
-		ev:function(){
+		ev: function () {
 			show("你产下了一只触手怪。")
 			show("不知道为什么，你对自己生下的触手产生了亲切感。")
 			show("你决定自己养大这个孩子，既不让它被冒险者伤害，也不让它危害人类。")
-			gain({birth_exp:1})
-			gainbuff("触手的饲主",1)
-			gainbuff("怀孕：触手",-10000)
-			if(rand(3)==0){
+			gain({ birth_exp: 1, p_exp: 5 })
+			gainbuff("触手的饲主", 1)
+			gainbuff("怀孕：触手", -10000)
+			if (rand(3) == 0) {
 				pause()
 				show("由于出产的影响，你分泌出了乳汁。")
-				gain({b_exp:5})
-				if(!("母乳体质"in buff)) gainbuff("母乳体质")
+				gain({ b_exp: 5 }, null, "extra")
+				if (!("母乳体质" in buff)) gainbuff("母乳体质")
 			}
+			if ("强制排卵" in buff) removebuff("强制排卵")
 		},
 		town:true,
 		chance:function(){
@@ -315,7 +284,7 @@ function tentacle(){
 			show("为了改变她的观点，你决定让她亲自体验一下触手的美好。")
 			show("你暗算了会长，然后叫出躲在一旁的触手侵犯了她。")
 			show("会长和你预料的一样，沉迷在和触手交合当中。", true)
-			show("事后，她并没有责备你。只是代表公会没收了这只触手怪。")
+			show("事后，她并没有责备你。只是代表冒险者公会没收了这只触手怪。")
 			show("几个星期后，公会里的每一个女冒险者都认识到了触手的美好。", true)
 			show("结局：触手的俘虏")
 			endofgame("触手的俘虏")
@@ -324,18 +293,19 @@ function tentacle(){
 		town: true,
 		once: true,
 		chance: function () {
-			if (getbuff("触手的饲主") >= 4 && getbuff("魔眼的注视") >= 4) {
-				return (getbuff("触手的饲主") / 4 + prostitute_chance()) + 10
+			if (monk_empty()) return 0
+			if (getbuff("触手的饲主") >= 5 && getbuff("魔眼的注视") >= 4) {
+				return (getbuff("触手的饲主") / 4 - 1 + prostitute_chance() / 2) * 2
 			}
-			if (getbuff("触手的饲主") >= 4) {
-				return (getbuff("触手的饲主") / 4 + prostitute_chance())
+			if (getbuff("触手的饲主") >= 5) {
+				return (getbuff("触手的饲主") / 4 - 1 + prostitute_chance() / 2)
 			}
 		},
 		end: 4
 	}
 	ev["tentacle_boss"]={
 		ev:function(){
-			var pow = tentacle_pow + 5
+			var pow = tentacle_pow + 3
 			if ("触手服" in buff) {
 				show("你在触手服的帮助下潜入了触手迷宫深处。")
 				show("遇到你的敌人都把你当成了一个再寻常不过的，被触手洗脑的女冒险者。",true)
@@ -346,11 +316,16 @@ function tentacle(){
 				show("你顺利地接近了触手原体，并对它展开突袭。")
 				show("你重创了触手原体。")
 				show("对方愤怒地发动了反击，大量触手朝你卷来。")
+
+				slayer()
 				pow -= 3
 			} else {
 				show("你在迷宫的深处遇到了触手原体。")
+				slayer()
 				show("它正在侵犯一个衣不蔽体的少女。", true)
-				if (check("wis", pow) >= 0) {
+				if ("诱饵" in flag) {
+					show("你吸取了上次的教训，保持着安全的距离。")
+				} else if (check("wis", pow) >= 0) {
 					show("你注意到少女有被触手洗脑的迹象，判断这可能是个陷阱。", true)
 				} else {
 					show("你救下了少女。")
@@ -359,6 +334,7 @@ function tentacle(){
 					show("触手原体同时插入了三穴，注入了大量的精液。")
 					gain({ v_exp: 5, a_exp: 5, o_exp: 5, s_exp: 5 }, "触手原体")
 					gainbuff("怀孕：触手", 1)
+					gainflag("诱饵")
 					return
 				}
 				show("见你没有上钩，大量触手朝你卷来。")
@@ -390,7 +366,7 @@ function tentacle(){
 						show("完成复仇之后，你感觉到有些空虚（各种意义的）。")
 					else
 						show("完成复仇之后，你感觉到有些空虚。")
-					gain({ str: -4, dex: -4, wis: -4 })
+					gain({ str: -5, dex: -5, wis: -5 })
 				}
 				if ("触手服" in buff) {
 					setachievement("双面特工")
@@ -406,6 +382,7 @@ function tentacle(){
 		town:false,
 		chance: function () {
 			if (week - chapter_startweek <= 7) return 0
+			if ("失衡" in buff) return 0.5
 			if (week - chapter_startweek >= 16) return 2
 			return 1
 		},

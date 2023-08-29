@@ -25,7 +25,7 @@ function guild(){
 			}
 			if (myclass.name == "圣骑士") {
 				show("你带着强烈的使命感成为了一名冒险者。")
-				show("作为一名圣骑士，你身上带有五道正义圣印——这些圣印碰巧位于你的大腿内侧，并且组成了一个正字。")
+				show("作为一名圣骑士，你身上刻着五道足以反败为胜的正义圣印——这些圣印碰巧位于你的大腿内侧，并且组成了一个正字。")
 				gainbuff("正义圣印")
 			}
 			if (myclass.name == "复仇者") {
@@ -59,6 +59,30 @@ function guild(){
 				show("你可以从精液中获得经验值")
 				gainbuff("血脉觉醒", 1)
 			}
+			if (myclass.name == "野蛮人") {
+				show("你在流浪途中被公会收留，成为了一名冒险者。")
+				show("作为一名野蛮人，你不会从露出获得快感——因为你早已习惯更暴露的穿着。")
+				gainbuff("轻装上阵")
+				gainbuff("真空", 1000)
+				gain({ e_lv: 5 })
+				bonus_status.e_lv += 5
+			}
+			if (myclass.name == "武僧") {
+				show("你在云游途中目睹魔物的暴行，成为了一名冒险者。")
+				show("作为一名修行者，你可以减轻获得的快感——但真气总会有失控的时候。")
+				gainbuff("空灵体", 0)
+			}
+			if (myclass.name == "舞女") {
+				show("你在众人的关注之下，成为了一名冒险者。")
+				show("作为一名舞女，你可以获得观众的支持——请不要辜负他们的期待。")
+				gainbuff("人气明星", 1)
+			}
+			if (myclass.name == "魔剑士") {
+				show("你在魔剑的驱使下，成为了一名冒险者。")
+				show("作为一名魔剑士，你手中的武器能够收割敌人的灵魂——外加敌人的欲望。")
+				gainbuff("灵魂收割", 0)
+				show("每收集2点灵魂，提升1点全属性")
+			}
 			//			gain({lust:10000})
 			//			gain({str:10,dex:10,wis:10})
 			//gain({pay:500})
@@ -68,7 +92,7 @@ function guild(){
 			show("公会教官是一个满身伤痕的魁梧男人，你被他观察你的眼光弄得有些不自在。")
 			gainop("教官")
 			gainflag("trade", 60)
-			goblin_pow = 13
+			goblin_pow = 14
 		},
 		town: true,
 		once: true,
@@ -84,7 +108,7 @@ function guild(){
 					gain({ lust: 1 })
 				} else {
 					show("你认真地听着课，从会长的悲惨经历当中吸取了一些教训。")
-					gain({ exp: 5 })
+					gain({ exp: 10 })
 				}
 			},
 			town: true,
@@ -106,12 +130,13 @@ function guild(){
 					gainflag("娼妇", 1)
 				} else {
 					show("由于你达到了等级10，公会为你举办了庆祝活动。")
-					if (getop("会长") >= 0) gainop("会长")
-					if (getop("教官") >= 0) gainop("教官")
+					show("好友齐聚一堂。")
+					if ("常识改变：公会新政" in buff) {
+						gain({ v_exp: 6, b_exp: 3, o_exp: 5, les_exp: 10, a_exp: 3, s_exp: 1 }, "魔法师")
+					}
 					if (getop("武道家") >= 0) gainop("武道家")
 					if (getop("魔法师") >= 0) gainop("魔法师")
 					if (getop("刺客") >= 0) gainop("刺客")
-					if (getop("炼金术师") >= 0) gainop("炼金术师")
 				}
 			},
 			town: true,
@@ -122,7 +147,7 @@ function guild(){
 		},
 	ev["guild_leader2"]={
 		ev:function(){
-			show("你在前往公会办理手续时，碰见会长在向新人讲述被魔物侵犯的亲身经历。",true)
+			show("你在前往冒险者公会办理手续时，碰见会长在向新人讲述被魔物侵犯的亲身经历。",true)
 			if(rand(2)==0){
 				show("你听到公会的工作人员低声谈论着会长热衷于公开羞耻行为的异常性癖。")
 				show("你对会长这个人有了新的认识。")
@@ -142,7 +167,7 @@ function guild(){
 	}
 	ev["guild_leader3"]={
 		ev:function(){
-			show("你在前往公会办理手续时，又一次碰见会长在向新人讲述被魔物侵犯的亲身经历。")
+			show("你在前往冒险者公会办理手续时，又一次碰见会长在向新人讲述被魔物侵犯的亲身经历。")
 			show("你走上讲台，和后辈们分享了你被"+status.v_virgin+"夺走处女的经历。")
 			show("台下的新人和过去的你一样陷入了混乱。")
 			gain({lust:5})
@@ -162,7 +187,7 @@ function guild(){
 			gain({e_exp:2})
 			show("")
 			show("你遇到了和你一样赤身裸体的会长，场面顿时十分尴尬。")
-			gain({e_exp:3})
+			gain({e_exp:2})
 			show("最终，会长表示，身为冒险者，总会碰到在装备完全破损的情况下战斗的不利局面。你们都是在进行这方面的练习。")
 			show("你的注意力集中在会长下腹部的心形纹路上，没有听清她在说什么。")
 			gainop("会长")
@@ -171,25 +196,38 @@ function guild(){
 		town:true,
 		once:true,
 		chance:function(){
+			if (status.name == "野蛮人") return 0
 			if(getop("会长")>=3 && status.e_lv>=3) return 0.5
 		}
 	}
 	ev["guild_leader_drink"]={
 		ev:function(){
-			show("你前往公会办理手续时，会长正在喝加了牛奶的茶。",true)
-			if (status.s_lv <= 2) {
-				if (rand(3) == 1) {
-					show("你提醒她有头发掉进了茶里。")
-					show("她捞出了头发后继续喝着。你有些奇怪谁的头发这么弯曲。")
+			if ("常识改变：公会新政" in buff) {
+				show("你前往冒险者公会办理手续时，会长正在给你没见过的男人口交。")
+				if (status.o_lv <= 3) {
+					show("会长表示人类的精液对她而言寡淡如水。她只是在履行冒险者的职责，根本没有在享受。")
+					gain({lust: 3})
+				} else {
+					show("你上去帮忙，籍此缩短了等待时间。")
+					gain({ o_exp: 2 }, "路人")
 					gainop("会长")
 				}
 			} else {
-				show("你闻到一股淡淡的精液味。会长在茶里加的到底是什么？")
-				show("会长察觉到了你的眼神，却继续淡定地品着茶。")
-				gainop("会长")
-				if (rand(3) == 1) {
-					pause()
-					show("你无言地看着会长喝下去一根不知道是什么生物的阴毛。")
+				show("你前往冒险者公会办理手续时，会长正在喝加了牛奶的茶。", true)
+				if (status.s_lv <= 2) {
+					if (rand(3) == 1) {
+						show("你提醒她有头发掉进了茶里。")
+						show("她捞出了头发后继续喝着。你有些奇怪谁的头发这么弯曲。")
+						gainop("会长")
+					}
+				} else {
+					show("你闻到一股熟悉的精液味——会长在茶里加的到底是什么？")
+					show("会长察觉到了你的眼神，却继续淡定地品着茶。")
+					gainop("会长")
+					if (rand(3) == 1) {
+						pause()
+						show("你无言地看着会长喝下去一根不知道是什么生物的阴毛。")
+					}
 				}
 			}
 		},

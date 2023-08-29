@@ -25,6 +25,9 @@ function loan(){
 						show("完事后他表示自己最喜欢女人口交完之后嘴角流出精液的样子，而你却全部喝下去了，所以这个月的利息还是得正常支付——你理智地决定不要跟他争辩。")
 					}
 				}
+				if (status.name == "野蛮人") {
+					show("你体会到了文明社会的可怕。")
+				}
 			},
 			town:true,
 			once:true,
@@ -40,6 +43,9 @@ function loan(){
 				show("你只能全裸下跪，求他宽限一些时日。")
 				show("路人指着你议论纷纷。")
 				gain({e_exp:5})
+				if (status.name == "野蛮人") {
+					show("你体会到了文明社会的可怕。")
+				}
 			},
 			town:true,
 			once: true,
@@ -58,10 +64,16 @@ function loan(){
 				pause()
 				show("你还没来得及伸手，这笔钱就进了放贷者的口袋。")
 				prostitute_week = week
+				if (status.name == "野蛮人") {
+					show("你体会到了文明社会的可怕。")
+				}
 			},
 			town: true,
 			once: true,
 			chance: function () {
+				if (getbuff("负债") >= 2 && !("娼妇" in flag) && status.money <= -400) {
+					return 100
+				}
 				if (getbuff("负债") >= 2 && !("娼妇" in flag) && status.money <= -200) {
 					return  getbuff("负债") * 2
 				}
@@ -69,10 +81,17 @@ function loan(){
 		}
 		ev["loan4"] = {
 			ev: function () {
-				show("作为对长期不还钱的惩罚，放贷者公开了你的个人情报。")
-				show("从擅长的武器到喜欢的自慰方式，一应俱全。")
-				gainbuff("情报公开", 3)
-				show("泄露的情报降低了你对抗流氓的成功率")
+				show("放贷者拿来一堆延长还款期限的合同让你签署。")
+				if (status.name == "野蛮人") {
+					show("不识字的话按指印也行。")
+					show("你注意到合同里面夹了一些色彩鲜艳的纸片，在上面按指印的手感比白纸更好。")
+					gainbuff("免费做爱券", 3)
+					show("按下了你的指印的免费做爱券开始流通。")
+					return
+				}
+				show("你很快就被复杂的条款弄得头晕眼花，甚至没有注意到合同里面混了几张奇怪的纸片。")
+				gainbuff("免费做爱券", 3)
+				show("签署了你的名字的免费做爱券开始流通。")
 			},
 			town: true,
 			once: true,
@@ -88,11 +107,14 @@ function loan(){
 				randomattack(-status.money, 1, "客人", false, 5)
 				gain({ money: -status.money })
 				gainbuff("负债", -10000)
+				if (status.name == "野蛮人") {
+					show("你体会到了文明社会的可怕。")
+				}
 			},
 			town: true,
 			once: true,
 			chance: function () {
-				if (getbuff("负债") >= 3 && status.money <= -300 && past_event.includes("loan3") && "卖春价格" in buff) {
+				if (getbuff("负债") >= 3 && status.money <= -300 && past_event.includes("loan3")) {
 					return 10 - status.money / 50
 				}
 			}
@@ -132,5 +154,30 @@ function loan(){
 				if (getbuff("负债") >= 4 && status.money <= -500) return 10 - status.money / 50
 			}
 		}
+		/*ev["loan7"] = {
+			ev: function () {
+				show("放贷者怀疑你是否会赖账逃跑。")
+				show("你一再向他强调自己赚到钱后一定会还钱，但他并不相信。")
+				gainbuff("奴隶脚镣", 1)
+				gain({ str: -1, dex: -1, wis: -1 })
+				show("奴隶脚镣会随着时间推移而变沉重。")
+				show("只有击败首领级的魔物可以让你获得解脱（暂时地）。")
+				show("")
+				show("你表示脚镣会影响你的身手，降低你还上钱的概率。")
+				show("而放贷者认为他在提前帮你适应债务奴隶的生活。")
+				gainflag("放贷者的脚镣")
+				if (status.name == "术士") {
+					show("由于禁忌之书的效果，你在获得诅咒道具时额外获得了经验值")
+					gain({ exp: 50 })
+				}
+			},
+			town: true,
+			once: true,
+			chance: function () {
+				if (getbuff("负债") >= 3 && !("奴隶脚镣" in buff) && past_event.includes("loan5")) {
+					return getbuff("负债") + prostitute_chance()
+				}
+			}
+		}*/
 	}
 	

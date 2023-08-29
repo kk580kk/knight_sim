@@ -8,6 +8,7 @@ function sidequest() {
             show("这时你想起她刚才说的“特别的气息”，你很想打人。")
             gainbuff("素材收集", 0)
             alchemist_week = week
+            alchemist_experiment=chapter
         },
         town: true,
         once: true,
@@ -19,22 +20,25 @@ function sidequest() {
         ev: function () {
             show("你将收集的素材交付给了炼金术师。", true)
             if (getbuff("素材收集") >= 20) {
-                show("她对你收集到的精液量大为惊讶。")
+                show("她对你收集到的精液量大为吃惊，说你是她认识的第二擅长采集精液的人。")
                 show("你完全不想在这方面被人表扬。")
-                gain({ money: 75 })
+                gain({ money: 100 })
                 gainop("炼金术师")
-                if (getop("炼金术师") >= 4) setachievement("任务达人")
+                gainflag("quest")
+                if (getflag("quest") >= 4) setachievement("任务达人")
             } else if (week - alchemist_week <= 6) {
                 show("她称赞了你完成委托的效率。")
                 show("你强烈地想要打人。")
                 gain({ money: 75 })
                 gainop("炼金术师")
-                if (getop("炼金术师") >= 4) setachievement("任务达人")
+                gainflag("quest")
+                if (getflag("quest") >= 4) setachievement("任务达人")
             } else if (week - alchemist_week <= 12) {
                 show("她收下了素材。")
                 gain({ money: 50 })
                 gainop("炼金术师")
-                if (getop("炼金术师") >= 4) setachievement("任务达人")
+                gainflag("quest")
+                if (getflag("quest") >= 4) setachievement("任务达人")
             } else {
                 show("她指出由于你拖延得太久，素材都坏了。")
                 show("好在她有一位朋友就好这口，你收集的这些精液也不会完全浪费。")
@@ -50,7 +54,49 @@ function sidequest() {
             if (getbuff("素材收集") >= 10) return getbuff("素材收集") / 3
         },
     }
-
+    ev["alchemist3"] = {
+        ev: function () {
+            show("炼金术师想让你尝试她最近炼成的药物。")
+            alchemist_experiment = chapter
+            var r = rand(5)
+            if (r == 0) {
+                gain({ s_exp: 2 })
+                show("你觉得炼金术师的新药闻起来像精液，喝起来也像精液。")
+            }
+            if (r == 1) {
+                gainbuff("圣水的恩惠", 4)
+                show("在接下来的两星期内，你的事件判定会进行两次并取较好的结果。")
+                show("你很想知道这个怎么看都毫无信仰心的炼金术师为什么能制作圣水。")
+            }
+            if (r == 2) {
+                var rr = rand(3)
+                if (rr == 0) gain({ str: 2 })
+                if (rr == 1) gain({ dex: 2 })
+                if (rr == 2) gain({ wis: 2 })
+                show("你感到自己被强化了。")
+                var rr2 = rand(3)
+                if (rr2 == 0) gain({ str: -2 })
+                if (rr2 == 1) gain({ dex: -2 })
+                if (rr2 == 2) gain({ wis: -2 })
+                show("然后你感到自己被弱化了。")
+            }
+            if (r == 3) {
+                gain({ drug_exp: 2 })
+                show("你在媚药的影响下袭击了炼金术师。")
+                gain({ o_exp: 4, v_exp: 2, les_exp: 6 }, "炼金术师", true)
+            }
+            if (r == 4) {
+                show("你确信这是你喝过的最难喝的药水。")
+                show("事后，你却发现自己的注意力被大幅强化了，当天就学会了一个高难度的战斗动作。")
+                gain({ exp: 50 })
+            }
+            gainop("炼金术师")
+        },
+        town: true,
+        chance: function () {
+            if (getop("炼金术师") >= 2 && alchemist_experiment != chapter) return 0.2
+        },
+    }
     ev["demon"] = {
         ev: function () {
             show("戴着面纱的少女拦住了你。")
@@ -82,19 +128,15 @@ function sidequest() {
     ev["demon_ex"] = {
         ev: function () {
             show("你遇到了神秘少女。")
-            show("魔力之卵突然震动起来")
+            show("魔力之卵突然振动起来")
             gain({ v_exp: 2 })
             show("你自认为没有做任何会刺激到魔力之卵的事情，为什么……")
-            pause()
-            show("魔力之卵突然震动起来")
+            show("魔力之卵突然振动起来")
             gain({ v_exp: 2 })
-            pause()
-            show("魔力之卵突然震动起来")
+            show("魔力之卵突然振动起来")
             gain({ v_exp: 2 })
-            pause()
-            show("魔力之卵突然震动起来")
+            show("魔力之卵突然振动起来")
             gain({ v_exp: 2 })
-            pause()
             show("面纱下的少女在偷笑。")
             gainop("神秘少女")
         },
@@ -142,7 +184,7 @@ function sidequest() {
             show("她表示你消耗护符的速度太快了。并提议将魔纹画在你的身上，这样可以借助你身体的魔力，提供更久的保护。", true)
             show("少女让你闭上眼睛，随后你感受到纤细的手指划过你的小腹。")
             show("奇妙的触感持续了一阵后，仪式结束了。你低头看去，魔纹被刻印在了你的身上。")
-            gain({ les_exp: 2 }, "神秘少女")
+            gain({ les_exp: 2 }, "神秘少女", true)
             pause()
             gainbuff("守护魔纹")
             show("你隐约感觉面纱下的少女在偷笑。")
@@ -234,20 +276,18 @@ function sidequest() {
                 show("公主骑士立刻就向你认输，并请你对败者进行责罚。")
                 gain({ money: 200, exp: 200, les_exp: 8 }, "公主骑士", true)
                 gainbuff("传奇克星")
-                setachievement("传奇克星")
+                setachievement("公主骑士")
             }else if ("淑女的收藏" in buff && status.m_lv + rand(6) >= 6) {
                 show("你掏出了随身携带的假阳具，一击贯穿了公主骑士的阴户。")
                 show("公主骑士立刻就失去了战意。")
                 gain({ money: 200, exp: 200, les_exp: 5, v_exp: 5 }, "公主骑士", true)
                 gainbuff("传奇克星")
-                setachievement("传奇克星")
             } else if (status.les_lv + rand(8) >= 8) {
                 show("你不甘示弱地掀开了公主骑士破破烂烂的战裙。")
-                show("你们斗得难解难分。")
-                show("最终两人双双脱力，打成了平手。")
+                show("两人你来我往地攻击着对方的敏感部位，斗得难解难分。")
+                show("最终双双脱力，打成了平手。")
                 gain({ money: 200, exp: 200, les_exp: 10, v_exp: 10, o_exp: 10 },"公主骑士",true)
                 gainbuff("传奇克星")
-                setachievement("传奇克星")
             } else {
                 show("你试图推开她，但丝毫无法撼动她的身体。")
                 show("只能任凭她玩弄身体。")
@@ -260,20 +300,28 @@ function sidequest() {
         town: false,
         once: true,
         chance: function () {
-            if (status.lewd >= 70 && ("魅魔的香水" in buff)) return 1.5
-            if (status.lewd >= 70) return 0.5
+            if (status.lewd >= 80 && ("魅魔的香水" in buff)) return 1.5
+            if (status.lewd >= 80) return 0.5
         }
     }
 
     ev["tablet"] = {
         ev: function () {
+            hiddenplace()
+
             if (status.name == "被诅咒的骑士") {
                 show("你发现了一块眼熟的石碑——当初就是这东西诅咒了你")
                 show("当你掏出武器准备砸掉石碑时，上面浮现出文字：")
+            } else if (status.name == "野蛮人") {
+                show("你发现了一块古老的石碑")
+                show("当你靠近石碑时，上面浮现出文字。")
+                show("在察觉到你是文盲后，文字贴心地变成了图画。")
+                show("（由于这是个纯文字界面的游戏，图画又被表示成了文字）")
             } else {
                 show("你发现了一块古老的石碑")
                 show("当你靠近石碑时，上面浮现出文字：")
             }
+            
             show("")
             var cnt = 0
             show("至今为止，你做出了下列淫行：")
@@ -283,6 +331,12 @@ function sidequest() {
             }
             show("你一共高潮了" + status.orgasm + "次")
             show("你的淫乱度达到了" + status.lewd)
+
+            var v = getweakness()
+
+            show("你的身上有着" + v + "处弱点")
+            if (v >= 3) cnt++
+
             if (status.birth_exp >= 1) {
                 show("你有着" + status.birth_exp + "次出产经验")
                 if (status.birth_exp >= 2) cnt++
@@ -366,106 +420,28 @@ function sidequest() {
         town: false,
         once: true,
         chance: function () {
-            if (status.name == "放逐者") return 3
-            return 0.2
+            return hiddenchance() * 10
         },
         start: 5,
         end: 5
     }
+}
 
-    
-    ev["altar"] = {
-        ev: function () {
-            show("你遇到了一座被遗忘的祭坛。")
-            show("祭坛的中央是一根耸立的阳具雕像。")
-            show("你感到祭坛在催促你献祭。")
-            show("你缓缓地坐上去，然后动起了腰。")
-            gain({v_exp:6, p_exp:4},"祭坛")
-            show("随着你的体液沾湿了雕像，你感到雕像似乎活了起来。你无法区分是自己在动还是雕像在动。")
-            show("")
-            show("你在一段时间后清醒过来，察觉到自己获得了新的力量：")
-            show("你获得了卖春价格除以25的全属性")
-            var v = getbuff("卖春价格") / 25
-            gain({ str: v, dex: v, wis: v })
-        },
-        town: false,
-        once: true,
-        chance: function () {
-            if (getflag("娼妇") >= 5) return 0.02
-        },
+function getweakness() {
+    var vv = 0
+    for ([key, value] of Object.entries(buff)) {
+        if (key.includes("弱点：")) vv++
     }
+    if (vv == 6) setachievement("破绽百出")
+    return vv
+}
 
-    ev["altar2"] = {
-        ev: function () {
-            show("你遇到了一座被遗忘的祭坛。")
-            show("祭坛的中央是一张平整的祭台。")
-            show("你感到祭坛在催促你献祭。")
-            show("你躺在了祭台上。一副眼罩凭空出现在你的脸上，夺取了你的视线。")
-            gain({ v_exp: 3, a_exp: 3, o_exp:3, o_exp:3, p_exp:3, u_exp:3}, "祭坛")
-            show("在各种你无法识别的性玩具的刺激下，一切陷入黑暗。")
-            show("")
-            show("你在一段时间后清醒过来，察觉到自己获得了新的力量：")
-            show("你获得了等于诅咒道具数量的全属性")
-            var v = countcurseditem()
-            gain({ str: v, dex: v, wis: v })
-        },
-        town: false,
-        once: true,
-        chance: function () {
-            if (countcurseditem() > 1) return 0.02
-        },
+function slayer() {
+    if ("传奇克星" in buff) {
+        show("由于击败传奇人物的经历，你在对抗首领时获得加值。")
     }
-    /*
-    ev["note_for_yourself"] = {
-        ev: function () {
-            show("一根柱子吸引了你的注意，你发现上面有一块松动的石块。")
-            show("搬动砖块，你在里面找到了一张折起来的纸条。")
-            var s = localStorage.getItem("noteforyourself")
-            if (s == null) s = "战士"
-            if (s == "战士") {
-                show("纸条上写着一种攻守兼备的战斗技巧。")
-                gain({ str: 2 })
-                setachievement("铁门")
-            }
-            if (s == "宝藏猎人") {
-                show("纸条上写着一个秘密的藏宝地点。")
-                gain_treasure(maxtreasure)
-            }
-            if (s == "神官") {
-                show("纸条上写着教会的秘闻。")
-                gain({ wis: 2 })
-            }
-            if (s == "骑士") {
-                show("纸条上写着偿还债务的方法。")
-                gain({ money: 100 })
-            }
-            if (s == "圣骑士") {
-                show("纸条上写着一系列的戒律。")
-                gain({ str: 2 })
-            }
-            if (s == "复仇者") {
-                show("纸条上写着魔物的弱点。")
-                gain({ dex: 2 })
-            }
-            if (s == "术士") {
-                show("纸条上写着一种倾泻魔力的战斗技巧。")
-                gain({ wis: 2 })
-            }
-            if (s == "被诅咒的骑士") {
-                show("纸条上描述了一个古怪的石碑，并强调了不要接近。")
-                gainflag("石碑")
-            }
-            if (s == "放逐者") {
-                show("纸条上写着发掘自身潜力的方式。")
-                gain({ exp: 100 })
-            }
-            localStorage.setItem("noteforyourself", status.name)
-            show("你从前人留下的笔记当中获益匪浅，或许你也应该给后人留下点什么？")
-        },
-        town: false,
-        once: true,
-        chance: function () {
-            return 0.01
-        },
-    }*/
+    if ("渎神" in buff && !("失衡" in buff)) {
+        show("你任凭体内的真气暴走，只求在面对强敌时多一份胜算。")
+    }
+    isslayer = true
 }

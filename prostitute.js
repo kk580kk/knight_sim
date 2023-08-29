@@ -39,7 +39,10 @@ function prostitute(){
 			if (status.name == "术士") show("“今晚的新人是——术士。谁想狠狠地教育一下这个沉迷黑暗力量的小丫头？”")
 			if (status.name == "被诅咒的骑士") show("“今晚的新人是——被诅咒的骑士。如果有什么能比女骑士更受我们这个业界的欢迎，自然就是受到淫魔诅咒的女骑士！”")
 			if (status.name == "放逐者") show("“今晚的新人是——放逐者。她只是因为一丁点魅魔血统就遭到了放逐。当然，在我们这里，她的血统是个加分项。”")
-			pause()
+			if (status.name == "野蛮人") show("“今晚的新人是——野蛮人。相信大家早已见过她的裸体，也早已想要尝试她的滋味。”")
+			if (status.name == "武僧") show("“今晚的新人是——武僧。我们这些人对遥远国度的文化一直都很感兴趣，特别是合欢宗，极乐蛊，采补法和阴阳和合散。”")
+			if (status.name == "舞女") show("“今晚的新人是——舞女。以她的收入水平根本不该出现在这里，真是世事难料啊。”")
+			if (status.name == "魔剑士") show("“今晚的新人是——魔剑士。我得事先说明一下，如果在和她交合的过程中看到奇怪的灵体冒出来，那是她抵达高潮的标志。”")
 			if(status.v_virgin==""){
 				show("你被要求亲手张开阴部，向他们展示了你未经人事的小穴。")
 				gain({e_exp:2})
@@ -79,12 +82,12 @@ function prostitute(){
 		town:true,
 		once:true,
 		chance:function(){
-			if("契约：娼妇" in buff) return 10
+			if("契约：娼妇" in buff) return 50
 		}
 	}
 	ev["prostitute_dog"]={
 		ev:function(){
-			show("不知道从何时起，娼馆的客人都知道了月夜雌兽的真身。")
+			show("不知道从何时起，娼馆的客人都知道了月夜雌兽的真身。","stable")
 			show("你变得更受欢迎了——尤其是在满月时。", true)
 			gainbuff("卖春价格", 25)
 			prostitute_bonus +=25 
@@ -235,8 +238,8 @@ function prostitute(){
 
 function prostitute_chance() {
 	if (!("卖春价格"in buff)) return 0
-	var ans = (week - prostitute_week) * 0.2
-	if (status.money < 0) ans -= status.money / 100
+	var ans = (week - prostitute_week) * 0.1
+	if (status.money < 0) ans -= status.money / 200
 	if (ans < 0 || ans == null) return 0
 	return ans
 }
