@@ -46,15 +46,26 @@ gainbuff("负债",1)
 gainbuff("契约：娼妇",1)
 gainbuff("纹身：娼妇",1)
 gainbuff("公共厕所",1)
-gainbuff("服从兽人",1)
+gainbuff("素材收集",20)
+gainbuff("史莱姆的母亲", -1000)
+gainbuff("兽人的调教", -1000)
+gainbuff("兽人的调教", 6)
+gainbuff("监禁：兽人", -1000)
+gainbuff("监禁：哥布林", -1000)
 
 
 gainbuff("常识改变：隐藏菜单")
+gainbuff("常识改变：分享秘密")
+gainbuff("常识改变：义警行动")
+gainbuff("常识改变：勇者之证")
+gainbuff("常识改变：互相帮助")
+gainbuff("缰绳")
 gainbuff("堕落之种")
 gainbuff("魅魔的香水")
 gainbuff("淑女的收藏")
 gainbuff("梦境乐园的门票")
-gainbuff("梦境乐园的奖券", 1)
+gainbuff("梦境乐园的奖券", 3)
+gainbuff("情报公开", 5)
 
 
 gainbuff("遗忘诅咒")
@@ -62,4 +73,26 @@ gainbuff("感度倍增")
 gainbuff("魔力之卵")
 gainbuff("诅咒铃铛")
 gainbuff("试炼的后庭拉珠")
-gainbuff("罪人的颈环", 4)
+gainbuff("罪人的颈环", 400)
+
+
+gainbuff("月夜雌兽") //你在夜晚的街道上化身野兽
+gainbuff("败北愿望") //你为了满足欲望会故意输给魔物
+gainbuff("诱触手体质") //你的身体散发着吸引触手的气味
+gainbuff("诅欲求不满咒铃铛") //即便如此，你的身体仍然欲求不满
+
+
+
+
+show("你解锁了骑士")
+show("你解锁了圣骑士")
+show("你解锁了复仇者")
+show("你解锁了术士")
+show("你解锁了被诅咒的骑士")
+show("你解锁了放逐者")
+
+unlock = { "战士": true, "宝藏猎人": true, "神官": true, "骑士": true, "圣骑士": true, "复仇者": true, "术士": true, "被诅咒的骑士": true, "放逐者": true }
+	
+
+
+
